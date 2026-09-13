@@ -6,14 +6,14 @@ import { MapPin, Phone } from 'lucide-react'
 import { HashLink } from '../router'
 import { Reveal, RevealImage } from '../Reveal'
 import { ProductCard } from '../ProductCard'
-import { useKinsuroi, s } from '../store'
+import { useK, s } from '../store'
 import { extractSocial, SocialRow } from '../SocialIcons'
 import type { Article } from '@/lib/types'
 
 /* ─────────────────────────── HERO ─────────────────────────── */
 
 function Hero() {
-  const settings = useKinsuroi((st) => st.settings)
+  const settings = useK((st) => st.settings)
   const reduce = useReducedMotion()
   const ease = [0.22, 1, 0.36, 1] as const
 
@@ -32,12 +32,12 @@ function Hero() {
           </motion.p>
 
           <motion.h1
-            className="font-display text-[2.75rem] leading-[1.05] md:text-6xl xl:text-7xl text-ink"
+            className="font-display text-[2.5rem] leading-[1.08] md:text-5xl lg:text-6xl text-ink"
             initial={{ opacity: 0, y: reduce ? 0 : 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.22, ease }}
           >
-            {s(settings, 'hero_title', 'YOUR BEAUTY, YOUR RITUAL.')}
+            {s(settings, 'hero_title', 'KECANTIKANMU, RITUALMU.')}
           </motion.h1>
 
           <motion.p
@@ -46,7 +46,7 @@ function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.34, ease }}
           >
-            {s(settings, 'hero_subtitle', 'Discover a simple and elegant beauty ritual with KINSUROI.')}
+            {s(settings, 'hero_subtitle', 'Temukan ritual kecantikan yang sederhana dan elegan bersama KINSUROI.')}
           </motion.p>
 
           <motion.div
@@ -55,11 +55,11 @@ function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.46, ease }}
           >
-            <HashLink to={s(settings, 'hero_cta_url', '#/products')} className="btn-primary">
-              {s(settings, 'hero_cta_text', 'SHOP PRODUCTS')}
+            <HashLink to={s(settings, 'hero_cta_url', '/products')} className="btn-primary">
+              {s(settings, 'hero_cta_text', 'LIHAT PRODUK')}
             </HashLink>
-            <HashLink to={s(settings, 'hero_cta2_url', '#/about')} className="btn-outline">
-              {s(settings, 'hero_cta2_text', 'EXPLORE KINSUROI')}
+            <HashLink to={s(settings, 'hero_cta2_url', '/about')} className="btn-outline">
+              {s(settings, 'hero_cta2_text', 'KENALI KINSUROI')}
             </HashLink>
           </motion.div>
         </div>
@@ -94,11 +94,11 @@ function Hero() {
 /* ─────────────────── BRAND INTRODUCTION ─────────────────── */
 
 function BrandIntro() {
-  const settings = useKinsuroi((st) => st.settings)
+  const settings = useK((st) => st.settings)
   const desc = s(
     settings,
     'brand_description',
-    'KINSUROI is a beauty brand built on one quiet idea: that caring for yourself should feel simple, elegant and honest.',
+    'KINSUROI adalah brand kecantikan dengan satu ide sederhana: merawat diri harus terasa mudah, elegan, dan jujur.',
   )
   return (
     <section className="bg-sand py-20 md:py-32">
@@ -117,8 +117,8 @@ function BrandIntro() {
 
         <div className="lg:col-span-6 lg:col-start-7">
           <Reveal delay={0.15}>
-            <p className="kicker mb-5">The Brand</p>
-            <h2 className="font-display text-4xl md:text-5xl text-ink">{s(settings, 'brand_title', 'Beauty, Simplified.')}</h2>
+            <p className="kicker mb-5">Brand Kami</p>
+            <h2 className="font-display text-4xl md:text-5xl text-ink">{s(settings, 'brand_title', 'Kecantikan yang Sederhana.')}</h2>
             <div className="mt-6 md:mt-8 space-y-4 max-w-xl">
               {desc.split('\n').filter(Boolean).map((p, i) => (
                 <p key={i} className="text-muted-foreground font-light leading-relaxed">
@@ -128,7 +128,7 @@ function BrandIntro() {
             </div>
             <div className="mt-10">
               <HashLink to="/about" className="link-underline text-[11px] tracking-[0.28em] uppercase text-ink">
-                Discover KINSUROI
+                Kenali KINSUROI
               </HashLink>
             </div>
           </Reveal>
@@ -141,20 +141,20 @@ function BrandIntro() {
 /* ───────────────────── PRODUCT COLLECTION ───────────────────── */
 
 function Collection() {
-  const products = useKinsuroi((st) => st.products)
+  const products = useK((st) => st.products)
   return (
     <section className="bg-white py-20 md:py-32">
       <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
         <Reveal className="text-center mb-14 md:mb-20">
-          <p className="kicker mb-5">The Collection</p>
-          <h2 className="font-display text-4xl md:text-5xl text-ink">EXPLORE OUR COLLECTION</h2>
+          <p className="kicker mb-5">Koleksi Kami</p>
+          <h2 className="font-display text-4xl md:text-5xl text-ink">JELAJAHI KOLEKSI KAMI</h2>
           <p className="mt-5 text-muted-foreground font-light max-w-lg mx-auto">
-            Essential skincare and body care, thoughtfully made for your daily ritual.
+            Perawatan wajah dan tubuh esensial, diracik dengan penuh pertimbangan untuk ritual harianmu.
           </p>
         </Reveal>
 
         {products.length === 0 ? (
-          <p className="text-center text-muted-foreground">Products are coming soon.</p>
+          <p className="text-center text-muted-foreground">Produk segera hadir.</p>
         ) : (
           <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-12 md:gap-x-8 md:gap-y-16">
             {products.slice(0, 8).map((p, i) => (
@@ -166,7 +166,7 @@ function Collection() {
         {products.length > 8 && (
           <Reveal className="text-center mt-16 md:mt-20">
             <HashLink to="/products" className="btn-outline">
-              VIEW ALL PRODUCTS
+              LIHAT SEMUA PRODUK
             </HashLink>
           </Reveal>
         )}
@@ -178,20 +178,20 @@ function Collection() {
 /* ───────────────────────── CTA BANNER ───────────────────────── */
 
 function CtaBanner() {
-  const settings = useKinsuroi((st) => st.settings)
+  const settings = useK((st) => st.settings)
   return (
     <section className="bg-ink text-white">
       <div className="mx-auto max-w-[1440px] px-6 lg:px-12 py-20 md:py-28 text-center">
         <Reveal>
           <h2 className="font-display text-3xl md:text-5xl tracking-wide">
-            {s(settings, 'cta_title', 'DISCOVER YOUR BEAUTY ROUTINE')}
+            {s(settings, 'cta_title', 'TEMUKAN RITUAL KECANTIKANMU')}
           </h2>
           <p className="mt-5 text-white/60 font-light max-w-xl mx-auto">
-            {s(settings, 'cta_text', 'Explore the KINSUROI collection and find the ritual that suits you.')}
+            {s(settings, 'cta_text', 'Jelajahi koleksi KINSUROI dan temukan ritual yang tepat untukmu.')}
           </p>
           <div className="mt-10">
-            <HashLink to={s(settings, 'cta_button_url', '#/products')} className="btn-light">
-              {s(settings, 'cta_button_text', 'SHOP NOW')}
+            <HashLink to={s(settings, 'cta_button_url', '/products')} className="btn-light">
+              {s(settings, 'cta_button_text', 'BELI SEKARANG')}
             </HashLink>
           </div>
         </Reveal>
@@ -206,7 +206,7 @@ export function JournalCard({ article, index = 0 }: { article: Article; index?: 
   return (
     <Reveal delay={index * 0.1}>
       <article className="group">
-        <HashLink to={`/journal/${article.slug}`} ariaLabel={`Read ${article.title}`}>
+        <HashLink to={`/journal/${article.slug}`} ariaLabel={`Baca ${article.title}`}>
           <div className="relative aspect-[4/3] bg-sand overflow-hidden">
             {article.thumbnail ? (
               <Image
@@ -228,7 +228,7 @@ export function JournalCard({ article, index = 0 }: { article: Article; index?: 
               {article.title}
             </h3>
             {article.excerpt && <p className="mt-2 text-sm text-muted-foreground font-light leading-relaxed line-clamp-2">{article.excerpt}</p>}
-            <p className="mt-3 text-[10px] tracking-[0.28em] uppercase text-ink/70">READ STORY</p>
+            <p className="mt-3 text-[10px] tracking-[0.28em] uppercase text-ink/70">BACA CERITA</p>
           </div>
         </HashLink>
       </article>
@@ -237,7 +237,7 @@ export function JournalCard({ article, index = 0 }: { article: Article; index?: 
 }
 
 function JournalPreview() {
-  const articles = useKinsuroi((st) => st.articles)
+  const articles = useK((st) => st.articles)
   return (
     <section className="bg-cream py-20 md:py-32">
       <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
@@ -245,12 +245,12 @@ function JournalPreview() {
           <p className="kicker mb-5">Journal</p>
           <h2 className="font-display text-4xl md:text-5xl text-ink">KINSUROI JOURNAL</h2>
           <p className="mt-5 text-muted-foreground font-light max-w-lg mx-auto">
-            Notes on skincare, rituals and living beautifully.
+            Catatan seputar skincare, ritual, dan hidup yang indah.
           </p>
         </Reveal>
 
         {articles.length === 0 ? (
-          <p className="text-center text-muted-foreground">Stories are coming soon.</p>
+          <p className="text-center text-muted-foreground">Cerita segera hadir.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
             {articles.slice(0, 3).map((a, i) => (
@@ -261,7 +261,7 @@ function JournalPreview() {
 
         <Reveal className="text-center mt-16 md:mt-20">
           <HashLink to="/journal" className="btn-outline">
-            VIEW ALL STORIES
+            LIHAT SEMUA CERITA
           </HashLink>
         </Reveal>
       </div>
@@ -272,7 +272,7 @@ function JournalPreview() {
 /* ────────────────────────── CONTACT ────────────────────────── */
 
 export function ContactBlock() {
-  const settings = useKinsuroi((st) => st.settings)
+  const settings = useK((st) => st.settings)
   const address = s(settings, 'contact_address', '')
   const phones = [s(settings, 'contact_phone_1', ''), s(settings, 'contact_phone_2', '')].filter(Boolean)
   const email = s(settings, 'contact_email', '')
@@ -282,18 +282,18 @@ export function ContactBlock() {
     <section className="bg-white py-20 md:py-32">
       <div className="mx-auto max-w-[1440px] px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         <Reveal className="lg:col-span-5">
-          <p className="kicker mb-5">Contact</p>
+          <p className="kicker mb-5">Kontak</p>
           <h2 className="font-display text-4xl md:text-5xl text-ink leading-tight">
-            We are here,
+            Kami di sini,
             <br />
-            quietly.
+            dengan tenang.
           </h2>
           <p className="mt-6 text-muted-foreground font-light max-w-md leading-relaxed">
-            Questions about our products or your order? Reach the KINSUROI team through our official channels below.
+            Ada pertanyaan tentang produk atau pesananmu? Hubungi tim KINSUROI melalui kanal resmi di bawah ini.
           </p>
           <div className="mt-10">
             <HashLink to="/contact" className="btn-primary">
-              CONTACT US
+              HUBUNGI KAMI
             </HashLink>
           </div>
         </Reveal>
@@ -304,7 +304,7 @@ export function ContactBlock() {
               <div className="py-6 border-b border-line flex gap-5">
                 <MapPin size={18} strokeWidth={1.5} className="mt-1 shrink-0 text-bronze" aria-hidden="true" />
                 <div>
-                  <p className="kicker !text-[10px] mb-2">Address</p>
+                  <p className="kicker !text-[10px] mb-2">Alamat</p>
                   <p className="text-sm leading-relaxed text-ink/80 max-w-md">{address}</p>
                 </div>
               </div>
@@ -313,7 +313,7 @@ export function ContactBlock() {
               <div className="py-6 border-b border-line flex gap-5">
                 <Phone size={18} strokeWidth={1.5} className="mt-1 shrink-0 text-bronze" aria-hidden="true" />
                 <div>
-                  <p className="kicker !text-[10px] mb-2">Telephone</p>
+                  <p className="kicker !text-[10px] mb-2">Telepon</p>
                   <ul className="space-y-1">
                     {phones.map((p) => (
                       <li key={p}>
@@ -335,7 +335,7 @@ export function ContactBlock() {
               </div>
             )}
             <div className="py-6 flex items-center justify-between flex-wrap gap-4">
-              <p className="kicker !text-[10px]">Follow KINSUROI</p>
+              <p className="kicker !text-[10px]">Ikuti KINSUROI</p>
               <SocialRow social={social} className="text-ink/60" size={17} />
             </div>
           </div>

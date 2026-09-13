@@ -1,18 +1,20 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
-import { HashLink, navigate } from './router'
-import { useKinsuroi, s } from './store'
+import { HashLink } from './router'
+import { useK, s } from './store'
 import { extractSocial, SocialRow } from './SocialIcons'
 
 const NAV = [
-  { label: 'Home', to: '/' },
-  { label: 'Products', to: '/products' },
-  { label: 'About', to: '/about' },
+  { label: 'Beranda', to: '/' },
+  { label: 'Produk', to: '/products' },
+  { label: 'Tentang', to: '/about' },
   { label: 'Journal', to: '/journal' },
-  { label: 'Contact', to: '/contact' },
+  { label: 'Kontak', to: '/contact' },
 ]
 
 export function Wordmark({ className = '', tone = 'dark' }: { className?: string; tone?: 'dark' | 'light' }) {
@@ -30,7 +32,8 @@ export function Wordmark({ className = '', tone = 'dark' }: { className?: string
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
-  const settings = useKinsuroi((st) => st.settings)
+  const pathname = usePathname()
+  const settings = useK((st) => st.settings)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -47,10 +50,7 @@ export function Navbar() {
     }
   }, [open])
 
-  const go = (to: string) => {
-    setOpen(false)
-    navigate(to)
-  }
+  const isActive = (to: string) => (to === '/' ? pathname === '/' : pathname.startsWith(to))
 
   return (
     <>
@@ -64,33 +64,36 @@ export function Navbar() {
           <button
             className="lg:hidden -ml-2 p-2 text-ink"
             onClick={() => setOpen(true)}
-            aria-label="Open menu"
+            aria-label="Buka menu"
           >
             <Menu size={22} strokeWidth={1.5} />
           </button>
 
           {/* Logo */}
-          <HashLink to="/" className="flex items-center" ariaLabel="KINSUROI home">
+          <Link href="/" className="flex items-center" aria-label="KINSUROI — beranda">
             <Wordmark className="text-base md:text-xl" />
-          </HashLink>
+          </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-10" aria-label="Primary">
+          <nav className="hidden lg:flex items-center gap-10" aria-label="Navigasi utama">
             {NAV.map((n) => (
-              <HashLink
+              <Link
                 key={n.to}
-                to={n.to}
-                className="text-[11px] tracking-[0.28em] uppercase text-ink/80 hover:text-ink transition-colors link-underline"
+                href={n.to}
+                aria-current={isActive(n.to) ? 'page' : undefined}
+                className={`text-[11px] tracking-[0.28em] uppercase transition-colors link-underline ${
+                  isActive(n.to) ? 'text-ink' : 'text-ink/80 hover:text-ink'
+                }`}
               >
                 {n.label}
-              </HashLink>
+              </Link>
             ))}
           </nav>
 
           {/* Desktop CTA */}
-          <HashLink to="/products" className="!hidden lg:!inline-flex btn-primary !py-3 !px-7">
-            SHOP NOW
-          </HashLink>
+          <Link href="/products" className="!hidden lg:!inline-flex btn-primary !py-3 !px-7">
+            BELI SEKARANG
+          </Link>
 
           {/* spacer to balance mobile layout */}
           <span className="lg:hidden w-8" aria-hidden="true" />
@@ -109,23 +112,29 @@ export function Navbar() {
           >
             <div className="flex items-center justify-between px-6 h-16 border-b border-line">
               <Wordmark className="text-base" />
-              <button className="p-2 text-ink" onClick={() => setOpen(false)} aria-label="Close menu">
+              <button className="p-2 text-ink" onClick={() => setOpen(false)} aria-label="Tutup menu">
                 <X size={22} strokeWidth={1.5} />
               </button>
             </div>
 
-            <nav className="flex-1 flex flex-col justify-center px-10 gap-2" aria-label="Mobile">
+            <nav className="flex-1 flex flex-col justify-center px-10 gap-2" aria-label="Navigasi seluler">
               {NAV.map((n, i) => (
-                <motion.button
+                <motion.div
                   key={n.to}
                   initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.08 + i * 0.06, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  onClick={() => go(n.to)}
-                  className="text-left font-display text-4xl py-3 text-ink hover:text-bronze transition-colors"
                 >
-                  {n.label}
-                </motion.button>
+                  <Link
+                    href={n.to}
+                    onClick={() => setOpen(false)}
+                    className={`block text-left font-display text-4xl py-3 transition-colors ${
+                      isActive(n.to) ? 'text-bronze' : 'text-ink hover:text-bronze'
+                    }`}
+                  >
+                    {n.label}
+                  </Link>
+                </motion.div>
               ))}
             </nav>
 
@@ -135,9 +144,9 @@ export function Navbar() {
               transition={{ delay: 0.4, duration: 0.5 }}
               className="px-10 pb-12 flex flex-col gap-8"
             >
-              <button onClick={() => go(s(settings, 'cta_button_url', '#/products'))} className="btn-primary w-full">
-                SHOP NOW
-              </button>
+              <Link href={s(settings, 'cta_button_url', '/products')} onClick={() => setOpen(false)} className="btn-primary w-full">
+                BELI SEKARANG
+              </Link>
               <SocialRow social={extractSocial(settings)} className="justify-center text-ink/60" size={18} />
             </motion.div>
           </motion.div>

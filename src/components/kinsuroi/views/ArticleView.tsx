@@ -6,19 +6,19 @@ import { ArrowLeft } from 'lucide-react'
 import { HashLink, navigate } from '../router'
 import { Reveal, RevealImage } from '../Reveal'
 import { JournalCard } from './HomeView'
-import { useKinsuroi } from '../store'
+import { useK } from '../store'
 
 function formatDate(iso?: string | null): string {
   if (!iso) return ''
   try {
-    return new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    return new Date(iso).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })
   } catch {
     return ''
   }
 }
 
 export function ArticleView({ slug }: { slug: string }) {
-  const articles = useKinsuroi((st) => st.articles)
+  const articles = useK((st) => st.articles)
   const article = useMemo(() => articles.find((a) => a.slug === slug), [articles, slug])
   const more = useMemo(() => articles.filter((a) => a.slug !== slug).slice(0, 3), [articles, slug])
 
@@ -26,10 +26,10 @@ export function ArticleView({ slug }: { slug: string }) {
     return (
       <main className="bg-white pt-40 pb-32 text-center px-6">
         <p className="kicker mb-4">404</p>
-        <h1 className="font-display text-4xl text-ink mb-6">Story not found</h1>
-        <p className="text-muted-foreground mb-10">This journal story is not available.</p>
+        <h1 className="font-display text-4xl text-ink mb-6">Cerita tidak ditemukan</h1>
+        <p className="text-muted-foreground mb-10">Cerita journal ini tidak tersedia.</p>
         <button onClick={() => navigate('/journal')} className="btn-primary">
-          BACK TO JOURNAL
+          KEMBALI KE JOURNAL
         </button>
       </main>
     )
@@ -97,8 +97,8 @@ export function ArticleView({ slug }: { slug: string }) {
       {more.length > 0 && (
         <div className="mx-auto max-w-[1440px] px-6 lg:px-12 mt-24 md:mt-32">
           <Reveal className="text-center mb-12">
-            <p className="kicker mb-4">Keep reading</p>
-            <h2 className="font-display text-3xl md:text-4xl text-ink">MORE FROM THE JOURNAL</h2>
+            <p className="kicker mb-4">Lanjutkan membaca</p>
+            <h2 className="font-display text-3xl md:text-4xl text-ink">SELANJUTNYA DARI JOURNAL</h2>
           </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
             {more.map((a, i) => (

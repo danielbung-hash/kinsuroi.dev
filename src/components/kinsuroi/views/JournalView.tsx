@@ -4,10 +4,10 @@ import { useMemo } from 'react'
 import { Reveal } from '../Reveal'
 import { JournalCard } from './HomeView'
 import { ArticleView } from './ArticleView'
-import { useKinsuroi } from '../store'
+import { useK } from '../store'
 
 export function JournalView() {
-  const articles = useKinsuroi((st) => st.articles)
+  const articles = useK((st) => st.articles)
 
   const published = useMemo(() => articles, [articles])
 
@@ -18,12 +18,12 @@ export function JournalView() {
           <p className="kicker mb-5">Journal</p>
           <h1 className="font-display text-4xl md:text-6xl text-ink">KINSUROI JOURNAL</h1>
           <p className="mt-5 text-muted-foreground font-light max-w-lg mx-auto">
-            Skincare routines, ingredient education, beauty tips and quiet lifestyle notes.
+            Rutinitas skincare, edukasi bahan, tips kecantikan, dan catatan gaya hidup yang tenang.
           </p>
         </Reveal>
 
         {published.length === 0 ? (
-          <p className="text-center text-muted-foreground py-16">Stories are coming soon.</p>
+          <p className="text-center text-muted-foreground py-16">Cerita segera hadir.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-8">
             {published.map((a, i) => (

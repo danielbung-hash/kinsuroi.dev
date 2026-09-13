@@ -1,68 +1,46 @@
 'use client'
 
-// KINSUROI — tiny hash router (SPA-safe for the sandbox preview, deep-linkable)
-// Routes:
-//   #/                        home
-//   #/products                collection
-//   #/products?category=slug  collection filtered
-//   #/products/{slug}         product detail
-//   #/about                   brand
-//   #/journal                 journal
-//   #/journal/{slug}          article
-//   #/contact                 contact
-//   #/admin                   CMS
+// KINSUROI — routing helpers on top of the Next.js App Router.
+// Every page is a real, separately addressable route:
+//   /                          home
+//   /products                  collection
+//   /products?category=slug    collection filtered
+//   /products/[slug]           product detail
+//   /about                     brand
+//   /journal                   journal
+//   /journal/[slug]            article
+//   /contact                   contact
+//   /coming-soon?page=…        customer-care placeholder
+//   /admin                     CMS
 
-import { useEffect, useState, useCallback } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
-export type Route = {
-  segments: string[]
-  query: URLSearchParams
-  raw: string
+type NextRouter = ReturnType<typeof useRouter>
+
+// Module-level bridge so plain functions (used by class-free helpers) can
+// trigger client-side navigation without prop-drilling the router.
+let routerRef: NextRouter | null = null
+
+/** Register the app router instance — called by <RouterBridge/> in SiteShell */
+export function setAppRouter(r: NextRouter | null) {
+  routerRef = r
 }
 
-function parseHash(): Route {
-  const hash = typeof window !== 'undefined' ? window.location.hash : ''
-  const raw = hash.startsWith('#') ? hash.slice(1) : hash
-  const [pathPart, queryPart] = raw.split('?')
-  const segments = pathPart.split('/').filter(Boolean)
-  return { segments, query: new URLSearchParams(queryPart || ''), raw }
-}
-
-export function useHashRoute(): Route {
-  // SSR-safe: start from the home route so server and client render match,
-  // then sync with the real hash after hydration.
-  const [route, setRoute] = useState<Route>(() => ({ segments: [], query: new URLSearchParams(), raw: '' }))
-
-  useEffect(() => {
-    const onChange = () => setRoute(parseHash())
-    onChange()
-    window.addEventListener('hashchange', onChange)
-    return () => window.removeEventListener('hashchange', onChange)
-  }, [])
-
-  return route
-}
-
+/** Programmatic navigation with guaranteed scroll-to-top */
 export function navigate(to: string, opts?: { keepScroll?: boolean }) {
-  const target = to.startsWith('#') ? to : `#${to.startsWith('/') ? to : `/${to}`}`
-  if (window.location.hash === target) {
-    // force refresh of the same route
-    window.dispatchEvent(new HashChangeEvent('hashchange'))
+  if (routerRef) {
+    routerRef.push(to)
   } else {
-    window.location.hash = target
+    window.location.assign(to)
   }
   if (!opts?.keepScroll) {
     window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'auto' }))
   }
 }
 
-export function useScrollTopOnRouteChange(key: string) {
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'auto' })
-  }, [key])
-}
-
-/** Anchor that keeps default hash behaviour but guarantees scroll-to-top */
+/** Internal link that keeps a single simple API across the whole site */
 export function HashLink({
   to,
   children,
@@ -76,17 +54,17 @@ export function HashLink({
   onClick?: () => void
   ariaLabel?: string
 }) {
-  const handle = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault()
-      onClick?.()
-      navigate(to)
-    },
-    [to, onClick],
-  )
+  const href = to.startsWith('/admin') ? to : to.startsWith('#') ? to.slice(1) || '/' : to
   return (
-    <a href={`#${to}`} onClick={handle} className={className} aria-label={ariaLabel}>
+    <Link href={href} onClick={onClick} className={className} aria-label={ariaLabel}>
       {children}
-    </a>
+    </Link>
   )
+}
+
+/** Scroll to top whenever the given key changes (route/slug change) */
+export function useScrollTopOnRouteChange(key: string) {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' })
+  }, [key])
 }

@@ -1,12 +1,13 @@
 'use client'
 
 import { MapPin, Phone, Mail, Clock } from 'lucide-react'
+import { HashLink } from '../router'
 import { Reveal } from '../Reveal'
-import { useKinsuroi, s } from '../store'
+import { useK, s } from '../store'
 import { extractSocial, SocialRow, WhatsAppIcon } from '../SocialIcons'
 
 export function ContactView() {
-  const settings = useKinsuroi((st) => st.settings)
+  const settings = useK((st) => st.settings)
   const address = s(settings, 'contact_address', '')
   const phones = [s(settings, 'contact_phone_1', ''), s(settings, 'contact_phone_2', '')].filter(Boolean)
   const email = s(settings, 'contact_email', '')
@@ -17,10 +18,10 @@ export function ContactView() {
     <main className="bg-white pt-28 md:pt-40 pb-20 md:pb-28">
       <div className="mx-auto max-w-5xl px-6 lg:px-12">
         <Reveal className="text-center mb-14 md:mb-20">
-          <p className="kicker mb-5">Contact</p>
-          <h1 className="font-display text-4xl md:text-6xl text-ink">GET IN TOUCH</h1>
+          <p className="kicker mb-5">Kontak</p>
+          <h1 className="font-display text-4xl md:text-6xl text-ink">HUBUNGI KAMI</h1>
           <p className="mt-5 text-muted-foreground font-light max-w-md mx-auto">
-            We would love to hear from you. Reach us through any of our official channels.
+            Kami senang mendengar dari kamu. Hubungi kami melalui salah satu kanal resmi berikut.
           </p>
         </Reveal>
 
@@ -29,8 +30,8 @@ export function ContactView() {
           <Reveal className="bg-white">
             <div className="px-8 py-10 h-full">
               <MapPin size={20} strokeWidth={1.5} className="text-bronze mb-5" aria-hidden="true" />
-              <h2 className="kicker !text-[10px] mb-3">Address</h2>
-              <p className="text-sm leading-relaxed text-ink/80">{address || 'Address will be available soon.'}</p>
+              <h2 className="kicker !text-[10px] mb-3">Alamat</h2>
+              <p className="text-sm leading-relaxed text-ink/80">{address || 'Alamat akan segera tersedia.'}</p>
             </div>
           </Reveal>
 
@@ -38,7 +39,7 @@ export function ContactView() {
           <Reveal delay={0.08} className="bg-white">
             <div className="px-8 py-10 h-full">
               <Phone size={20} strokeWidth={1.5} className="text-bronze mb-5" aria-hidden="true" />
-              <h2 className="kicker !text-[10px] mb-3">Telephone</h2>
+              <h2 className="kicker !text-[10px] mb-3">Telepon</h2>
               {phones.length ? (
                 <ul className="space-y-2">
                   {phones.map((p) => (
@@ -53,7 +54,7 @@ export function ContactView() {
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm text-muted-foreground/70 italic font-light">Phone numbers coming soon.</p>
+                <p className="text-sm text-muted-foreground/70 italic font-light">Nomor telepon segera hadir.</p>
               )}
             </div>
           </Reveal>
@@ -68,7 +69,7 @@ export function ContactView() {
                   {email}
                 </a>
               ) : (
-                <p className="text-sm text-muted-foreground/70 italic font-light">Email will be available soon.</p>
+                <p className="text-sm text-muted-foreground/70 italic font-light">Email akan segera tersedia.</p>
               )}
             </div>
           </Reveal>
@@ -77,7 +78,7 @@ export function ContactView() {
           <Reveal delay={0.16} className="bg-white">
             <div className="px-8 py-10 h-full">
               <Clock size={20} strokeWidth={1.5} className="text-bronze mb-5" aria-hidden="true" />
-              <h2 className="kicker !text-[10px] mb-3">Official Channels</h2>
+              <h2 className="kicker !text-[10px] mb-3">Kanal Resmi</h2>
               {whatsapp ? (
                 <a
                   href={whatsapp}
@@ -89,7 +90,7 @@ export function ContactView() {
                   Chat via WhatsApp
                 </a>
               ) : (
-                <p className="text-sm text-muted-foreground/70 italic font-light mb-5">WhatsApp will be available soon.</p>
+                <p className="text-sm text-muted-foreground/70 italic font-light mb-5">WhatsApp akan segera tersedia.</p>
               )}
               <div className="mt-2">
                 <SocialRow social={social} className="text-ink/60" size={18} />
@@ -110,22 +111,35 @@ export function ContactView() {
 }
 
 /** Quiet placeholder for customer-care pages that will be written later (FAQ, Shipping, …) */
+const SOON_TITLES: Record<string, string> = {
+  faq: 'FAQ',
+  pengiriman: 'Pengiriman',
+  pengembalian: 'Pengembalian',
+  'kebijakan-privasi': 'Kebijakan Privasi',
+  'syarat-ketentuan': 'Syarat & Ketentuan',
+}
+
 export function ComingSoonView({ page }: { page?: string }) {
-  const title = (page || '')
-    .split('-')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ')
+  const key = (page || '').toLowerCase()
+  const title =
+    SOON_TITLES[key] ||
+    (key
+      ? key
+          .split('-')
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(' ')
+      : 'Halaman Ini')
 
   return (
     <main className="bg-white pt-40 pb-40 text-center px-6">
-      <p className="kicker mb-4">Coming Soon</p>
-      <h1 className="font-display text-4xl md:text-5xl text-ink mb-6">{title || 'This Page'}</h1>
+      <p className="kicker mb-4">Segera Hadir</p>
+      <h1 className="font-display text-4xl md:text-5xl text-ink mb-6">{title}</h1>
       <p className="text-muted-foreground font-light max-w-md mx-auto mb-10">
-        We are preparing this page with care. In the meantime, our team is happy to help through the contact page.
+        Kami sedang menyiapkan halaman ini dengan hati-hati. Sementara itu, tim kami siap membantu melalui halaman kontak.
       </p>
-      <a href="#/contact" className="btn-primary">
-        CONTACT US
-      </a>
+      <HashLink to="/contact" className="btn-primary">
+        HUBUNGI KAMI
+      </HashLink>
     </main>
   )
 }

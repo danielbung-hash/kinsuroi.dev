@@ -14,7 +14,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
   return (
     <Reveal delay={(index % 4) * 0.08}>
       <article className="group">
-        <HashLink to={`/products/${product.slug}`} ariaLabel={`View ${product.name}`} className="block">
+        <HashLink to={`/products/${product.slug}`} ariaLabel={`Lihat ${product.name}`} className="block">
           <div className="relative aspect-[4/5] bg-sand overflow-hidden">
             <Image
               src={src}
@@ -34,7 +34,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             <h3 className="font-display text-lg md:text-xl text-ink leading-snug">{product.name}</h3>
             {product.shortDesc && <p className="text-sm text-muted-foreground mt-1">{product.shortDesc}</p>}
             <p className="mt-3 text-[10px] tracking-[0.28em] uppercase text-ink/70 group-hover:text-ink transition-colors duration-300 link-underline">
-              View Product
+              Lihat Produk
             </p>
           </div>
         </HashLink>

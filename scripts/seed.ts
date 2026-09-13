@@ -1,5 +1,5 @@
 /**
- * KINSUROI — Database seed
+ * KINSUROI — Database seed (Bahasa Indonesia)
  * Run: bun scripts/seed.ts
  *
  * NOTE: Product claims (benefits, ingredients, how-to-use, suitable-for, FAQ)
@@ -11,10 +11,10 @@ import { PrismaClient } from '@prisma/client'
 const db = new PrismaClient()
 
 const categories = [
-  { name: 'Face Care', slug: 'face-care', description: 'Cleansers, creams and targeted treatments for the face.', order: 1 },
-  { name: 'Serum', slug: 'serum', description: 'Concentrated facial serums.', order: 2 },
-  { name: 'Lip Care', slug: 'lip-care', description: 'Balms and care for the lips.', order: 3 },
-  { name: 'Body Care', slug: 'body-care', description: 'Shower, oil and lotion rituals for the body.', order: 4 },
+  { name: 'Perawatan Wajah', slug: 'face-care', description: 'Pembersih, krim, dan perawatan tertarget untuk wajah.', order: 1 },
+  { name: 'Serum', slug: 'serum', description: 'Serum wajah dengan kandungan terkonsentrasi.', order: 2 },
+  { name: 'Perawatan Bibir', slug: 'lip-care', description: 'Balm dan perawatan untuk bibir.', order: 3 },
+  { name: 'Perawatan Tubuh', slug: 'body-care', description: 'Ritual mandi, minyak, dan lotion untuk tubuh.', order: 4 },
 ]
 
 type SeedProduct = {
@@ -27,106 +27,106 @@ type SeedProduct = {
 }
 
 const products: SeedProduct[] = [
-  { name: 'KINSUROI Soft Cleanser Gel', slug: 'kinsuroi-soft-cleanser-gel', category: 'face-care', shortDesc: 'Gentle cleansing gel', featured: true, order: 1 },
-  { name: 'KINSUROI Herbal Cleanser Gel', slug: 'kinsuroi-herbal-cleanser-gel', category: 'face-care', shortDesc: 'Herbal cleansing gel', featured: true, order: 2 },
-  { name: 'KINSUROI L Active C+', slug: 'kinsuroi-l-active-c', category: 'serum', shortDesc: 'Active vitamin C serum', featured: true, order: 3 },
-  { name: 'KINSUROI Retinol Serum+', slug: 'kinsuroi-retinol-serum', category: 'serum', shortDesc: 'Retinol facial serum', featured: true, order: 4 },
-  { name: 'KINSUROI LipBalm', slug: 'kinsuroi-lipbalm', category: 'lip-care', shortDesc: 'Nourishing lip balm', order: 5 },
-  { name: 'KINSUROI LipBalm Coral', slug: 'kinsuroi-lipbalm-coral', category: 'lip-care', shortDesc: 'Lip balm in Coral', order: 6 },
-  { name: 'KINSUROI Shower Oel', slug: 'kinsuroi-shower-oel', category: 'body-care', shortDesc: 'Shower gel', order: 7 },
-  { name: 'KINSUROI Body Lotion Retinol', slug: 'kinsuroi-body-lotion-retinol', category: 'body-care', shortDesc: 'Retinol body lotion', order: 8 },
-  { name: 'KINSUROI Body Oel', slug: 'kinsuroi-body-oel', category: 'body-care', shortDesc: 'Body oil', order: 9 },
-  { name: 'KINSUROI Barrier Light Cream', slug: 'kinsuroi-barrier-light-cream', category: 'face-care', shortDesc: 'Lightweight barrier cream', order: 10 },
-  { name: 'KINSUROI Acne Gel', slug: 'kinsuroi-acne-gel', category: 'face-care', shortDesc: 'Targeted acne gel', order: 11 },
+  { name: 'KINSUROI Soft Cleanser Gel', slug: 'kinsuroi-soft-cleanser-gel', category: 'face-care', shortDesc: 'Gel pembersih yang lembut', featured: true, order: 1 },
+  { name: 'KINSUROI Herbal Cleanser Gel', slug: 'kinsuroi-herbal-cleanser-gel', category: 'face-care', shortDesc: 'Gel pembersih herbal', featured: true, order: 2 },
+  { name: 'KINSUROI L Active C+', slug: 'kinsuroi-l-active-c', category: 'serum', shortDesc: 'Serum vitamin C aktif', featured: true, order: 3 },
+  { name: 'KINSUROI Retinol Serum+', slug: 'kinsuroi-retinol-serum', category: 'serum', shortDesc: 'Serum wajah retinol', featured: true, order: 4 },
+  { name: 'KINSUROI LipBalm', slug: 'kinsuroi-lipbalm', category: 'lip-care', shortDesc: 'Balm bibir yang menutrisi', order: 5 },
+  { name: 'KINSUROI LipBalm Coral', slug: 'kinsuroi-lipbalm-coral', category: 'lip-care', shortDesc: 'Balm bibir nuansa coral', order: 6 },
+  { name: 'KINSUROI Shower Oel', slug: 'kinsuroi-shower-oel', category: 'body-care', shortDesc: 'Gel mandi', order: 7 },
+  { name: 'KINSUROI Body Lotion Retinol', slug: 'kinsuroi-body-lotion-retinol', category: 'body-care', shortDesc: 'Lotion tubuh dengan retinol', order: 8 },
+  { name: 'KINSUROI Body Oel', slug: 'kinsuroi-body-oel', category: 'body-care', shortDesc: 'Minyak tubuh', order: 9 },
+  { name: 'KINSUROI Barrier Light Cream', slug: 'kinsuroi-barrier-light-cream', category: 'face-care', shortDesc: 'Krim barrier bertekstur ringan', order: 10 },
+  { name: 'KINSUROI Acne Gel', slug: 'kinsuroi-acne-gel', category: 'face-care', shortDesc: 'Gel tertarget untuk jerawat', order: 11 },
 ]
 
 const articles = [
   {
-    title: 'Building a Simple Skincare Routine',
+    title: 'Membangun Rutinitas Skincare yang Sederhana',
     slug: 'building-a-simple-skincare-routine',
-    topic: 'Routine',
-    excerpt: 'A good routine does not need to be complicated. Learn the essential steps of a simple, consistent daily ritual.',
+    topic: 'Rutinitas',
+    excerpt: 'Rutinitas yang baik tidak harus rumit. Pelajari langkah-langkah esensial dari ritual harian yang sederhana dan konsisten.',
     thumbnail: '/images/journal-1.jpg',
-    content: `A skincare routine does not need ten steps to be effective. In fact, the most sustainable routines are often the simplest ones — a few well-chosen products, used consistently, morning and evening.
+    content: `Rutinitas skincare tidak membutuhkan sepuluh langkah untuk bekerja efektif. Faktanya, rutinitas yang paling bertahan lama justru yang paling sederhana — beberapa produk pilihan, digunakan secara konsisten, pagi dan malam.
 
-Start with cleansing. A clean canvas helps every product that follows work as intended. Choose a gentle cleanser that respects your skin, and use lukewarm water rather than something too hot.
+Mulailah dengan membersihkan. Kanvas yang bersih membantu setiap produk selanjutnya bekerja sebagaimana mestinya. Pilih pembersih yang lembut dan menghormati kulitmu, lalu gunakan air hangat — bukan air yang terlalu panas.
 
-After cleansing, consider a serum if your skin needs targeted attention. Serums are designed to deliver concentrated ingredients, so a little goes a long way. Allow it to absorb for a moment before moving on.
+Setelah membersihkan, pertimbangkan serum jika kulitmu butuh perawatan tertarget. Serum dirancang untuk mengantarkan bahan dengan konsentrasi tinggi, jadi sedikit saja sudah cukup. Beri waktu sejenak untuk menyerap sebelum melanjutkan.
 
-Next, seal everything in with a moisturiser. Even lightweight creams help support the skin barrier and keep water from evaporating through the day.
+Selanjutnya, kunci semua lapisan dengan pelembap. Bahkan krim bertekstur ringan pun membantu mendukung barrier kulit dan menjaga kelembapan sepanjang hari.
 
-Finally — and this is the step people skip most often — protect your skin from the sun every morning. It is the single most valuable habit in any routine.
+Terakhir — dan ini langkah yang paling sering dilewatkan — lindungi kulitmu dari matahari setiap pagi. Ini kebiasaan paling berharga dalam rutinitas apa pun.
 
-Consistency beats intensity. A simple ritual you follow every day will always outperform an elaborate one you follow once a week. Start small, stay gentle, and let your skin tell you what it needs.`,
-    seoTitle: 'Building a Simple Skincare Routine | KINSUROI Journal',
-    seoDescription: 'Learn how to build a simple, consistent skincare routine — cleansing, serum, moisturiser and daily protection.',
+Konsistensi mengalahkan intensitas. Ritual sederhana yang kamu jalani setiap hari akan selalu lebih baik daripada ritual rumit yang hanya dilakukan seminggu sekali. Mulailah dari yang kecil, tetap lembut, dan biarkan kulitmu berbicara.`,
+    seoTitle: 'Membangun Rutinitas Skincare yang Sederhana | KINSUROI Journal',
+    seoDescription: 'Pelajari cara membangun rutinitas skincare yang sederhana dan konsisten — pembersih, serum, pelembap, dan proteksi harian.',
   },
   {
-    title: 'Layering Skincare: The Right Order',
+    title: 'Layering Skincare: Urutan yang Benar',
     slug: 'layering-skincare-the-right-order',
-    topic: 'Education',
-    excerpt: 'Thin to thick, water to oil. Understanding layering order helps every product in your ritual do its best work.',
+    topic: 'Edukasi',
+    excerpt: 'Dari tekstur tipis ke kental, dari air ke minyak. Memahami urutan layering membantu setiap produk bekerja optimal.',
     thumbnail: '/images/journal-2.jpg',
-    content: `If you use more than one skincare product, order matters. A simple rule guides almost everything: apply from the thinnest, most watery texture to the thickest, most occlusive one.
+    content: `Jika kamu menggunakan lebih dari satu produk skincare, urutan itu penting. Satu aturan sederhana hampir berlaku untuk semuanya: aplikasikan dari tekstur paling tipis dan berbasis air, hingga yang paling kental dan oklusif.
 
-Begin with your cleanser to clear the way. Then, if you use a toner or essence, apply it while the skin is still slightly damp — it helps prepare the skin for what comes next.
+Mulailah dengan pembersih untuk membuka jalan. Lalu, jika kamu memakai toner atau essence, aplikasikan saat kulit masih sedikit lembap — ini membantu menyiapkan kulit untuk langkah berikutnya.
 
-Serums come next. Water-based serums go before oil-based ones. If you use more than one serum, let each one settle for thirty seconds to a minute before applying the next.
+Serum datang berikutnya. Serum berbasis air dipakai sebelum yang berbasis minyak. Jika kamu memakai lebih dari satu serum, beri jeda tiga puluh detik hingga satu menit di antara masing-masing.
 
-Creams and moisturisers follow. Their richer texture forms a seal that locks in the layers beneath. If you use a facial oil, it almost always goes last, on top of your cream.
+Krim dan pelembap menyusul setelahnya. Teksturnya yang lebih kaya membentuk lapisan penutup yang mengunci lapisan di bawahnya. Jika kamu memakai facial oil, hampir selalu dipakai paling akhir, di atas krim.
 
-At night, the same order applies. In the morning, always finish with sun protection as the final step before makeup — never underneath it.
+Di malam hari, urutan yang sama berlaku. Di pagi hari, selalu akhiri dengan tabir surya sebagai langkah terakhir sebelum makeup — bukan di bawahnya.
 
-One more note on active ingredients: if you are introducing something new, do it gradually and avoid layering multiple strong actives on the same night. Your skin will thank you for the patience.`,
-    seoTitle: 'Layering Skincare: The Right Order | KINSUROI Journal',
-    seoDescription: 'A practical guide to layering skincare products in the right order — from cleanser to sun protection.',
+Satu catatan soal bahan aktif: jika kamu memperkenalkan bahan baru, lakukan secara bertahap dan hindari menumpuk beberapa bahan aktif yang kuat di malam yang sama. Kulitmu akan berterima kasih atas kesabaran itu.`,
+    seoTitle: 'Layering Skincare: Urutan yang Benar | KINSUROI Journal',
+    seoDescription: 'Panduan praktis mengurutkan produk skincare dengan benar — dari pembersih hingga tabir surya.',
   },
   {
-    title: 'The Ritual of Body Care',
+    title: 'Ritual Perawatan Tubuh',
     slug: 'the-ritual-of-body-care',
     topic: 'Lifestyle',
-    excerpt: 'Body care is more than maintenance — it is a daily pause. Turn an ordinary shower into a quiet, restorative ritual.',
+    excerpt: 'Perawatan tubuh bukan sekadar pemeliharaan — ini jeda harian. Ubah mandi biasa menjadi ritual yang tenang dan memulihkan.',
     thumbnail: '/images/journal-3.jpg',
-    content: `We often treat body care as an afterthought — something rushed between the end of a shower and the start of the day. But the few minutes we spend caring for our body can become one of the calmest moments of a daily routine.
+    content: `Kami sering memperlakukan perawatan tubuh sebagai sesuatu yang sekadar — dilakukan terburu-buru di antara akhir mandi dan awal hari. Namun beberapa menit yang kita habiskan untuk merawat tubuh bisa menjadi salah satu momen paling tenang dalam rutinitas harian.
 
-Begin in the shower. Lukewarm water and a gentle body cleanser are all the skin needs. There is no need for water that is too hot; warmth should feel comforting, never stripping.
+Mulailah di kamar mandi. Air hangat dan pembersih tubuh yang lembut adalah semua yang dibutuhkan kulit. Tidak perlu air yang terlalu panas; kehangatan harus terasa menenangkan, tidak pernah mengeringkan.
 
-While the skin is still slightly damp after showering, apply a body lotion or oil. This small window of time is when moisture is best held against the skin. Take a moment to massage it in slowly — shoulders, arms, hands.
+Saat kulit masih sedikit lembap setelah mandi, aplikasikan lotion atau minyak tubuh. Jendela waktu kecil inilah saat kelembapan paling baik terjaga di kulit. Luangkan waktu untuk memijatnya perlahan — bahu, lengan, tangan.
 
-Small details matter more than quantity. A balm for the lips. A cream for the hands before bed. These tiny rituals, repeated daily, quietly become acts of self-respect.
+Detail kecil lebih berarti daripada jumlah. Balm untuk bibir. Krim untuk tangan sebelum tidur. Ritual kecil yang diulang setiap hari ini perlahan menjadi bentuk penghargaan pada diri sendiri.
 
-Body care, at its best, is not a chore. It is a pause — a few quiet minutes that belong entirely to you.`,
-    seoTitle: 'The Ritual of Body Care | KINSUROI Journal',
-    seoDescription: 'Turn everyday body care into a quiet ritual — gentle cleansing, mindful moisturising, and small daily habits.',
+Perawatan tubuh, pada versi terbaiknya, bukanlah kewajiban. Ia adalah jeda — beberapa menit tenang yang sepenuhnya milikmu.`,
+    seoTitle: 'Ritual Perawatan Tubuh | KINSUROI Journal',
+    seoDescription: 'Ubah perawatan tubuh sehari-hari menjadi ritual yang tenang — pembersihan lembut, pelembapan yang penuh perhatian, dan kebiasaan kecil setiap hari.',
   },
 ]
 
 const settings: { key: string; value: string; group: string }[] = [
   // Hero
-  { key: 'hero_title', value: 'YOUR BEAUTY, YOUR RITUAL.', group: 'hero' },
-  { key: 'hero_subtitle', value: 'Discover a simple and elegant beauty ritual with KINSUROI.', group: 'hero' },
-  { key: 'hero_cta_text', value: 'SHOP PRODUCTS', group: 'hero' },
-  { key: 'hero_cta_url', value: '#/products', group: 'hero' },
-  { key: 'hero_cta2_text', value: 'EXPLORE KINSUROI', group: 'hero' },
-  { key: 'hero_cta2_url', value: '#/about', group: 'hero' },
+  { key: 'hero_title', value: 'KECANTIKANMU, RITUALMU.', group: 'hero' },
+  { key: 'hero_subtitle', value: 'Temukan ritual kecantikan yang sederhana dan elegan bersama KINSUROI.', group: 'hero' },
+  { key: 'hero_cta_text', value: 'LIHAT PRODUK', group: 'hero' },
+  { key: 'hero_cta_url', value: '/products', group: 'hero' },
+  { key: 'hero_cta2_text', value: 'KENALI KINSUROI', group: 'hero' },
+  { key: 'hero_cta2_url', value: '/about', group: 'hero' },
   { key: 'hero_image', value: '/images/hero.jpg', group: 'hero' },
   // Brand
-  { key: 'brand_title', value: 'Beauty, Simplified.', group: 'brand' },
+  { key: 'brand_title', value: 'Kecantikan yang Sederhana.', group: 'brand' },
   {
     key: 'brand_description',
     value:
-      'KINSUROI is a beauty brand built on one quiet idea: that caring for yourself should feel simple, elegant and honest. We create essential skincare and body care — cleansers, serums, creams and daily rituals — thoughtfully formulated and beautifully understated.\n\nNo noise. No excess. Just the products you need, in a form you will love to use every day.',
+      'KINSUROI adalah brand kecantikan dengan satu ide sederhana: merawat diri harus terasa mudah, elegan, dan jujur. Kami menciptakan perawatan wajah dan tubuh yang esensial — pembersih, serum, krim, dan ritual harian — dengan formulasi yang dipikirkan matang dan tampilan yang understated.\n\nTanpa kebisingan. Tanpa kelebihan. Hanya produk yang kamu butuhkan, dalam bentuk yang kamu sukai untuk dipakai setiap hari.',
     group: 'brand',
   },
   { key: 'brand_image', value: '/images/brand.jpg', group: 'brand' },
   // Mid-page CTA
-  { key: 'cta_title', value: 'DISCOVER YOUR BEAUTY ROUTINE', group: 'cta' },
-  { key: 'cta_text', value: 'Explore the KINSUROI collection and find the ritual that suits you.', group: 'cta' },
-  { key: 'cta_button_text', value: 'SHOP NOW', group: 'cta' },
-  { key: 'cta_button_url', value: '#/products', group: 'cta' },
+  { key: 'cta_title', value: 'TEMUKAN RITUAL KECANTIKANMU', group: 'cta' },
+  { key: 'cta_text', value: 'Jelajahi koleksi KINSUROI dan temukan ritual yang tepat untukmu.', group: 'cta' },
+  { key: 'cta_button_text', value: 'BELI SEKARANG', group: 'cta' },
+  { key: 'cta_button_url', value: '/products', group: 'cta' },
   // Footer
-  { key: 'footer_text', value: 'Clean. Quiet. Elegant. Trustworthy.', group: 'footer' },
-  { key: 'footer_copyright', value: '© KINSUROI. All rights reserved.', group: 'footer' },
+  { key: 'footer_text', value: 'Bersih. Tenang. Elegan. Terpercaya.', group: 'footer' },
+  { key: 'footer_copyright', value: '© KINSUROI. Hak cipta dilindungi.', group: 'footer' },
   // Contact
   {
     key: 'contact_address',
@@ -149,7 +149,7 @@ const settings: { key: string; value: string; group: string }[] = [
 ]
 
 async function main() {
-  console.log('Seeding KINSUROI database…')
+  console.log('Seeding KINSUROI database (Bahasa Indonesia)…')
 
   // Categories
   for (const c of categories) {
@@ -177,7 +177,7 @@ async function main() {
 
   // Articles
   for (const a of articles) {
-    const data = { ...a, author: 'KINSUROI Editorial', status: 'published', publishedAt: new Date() }
+    const data = { ...a, author: 'Redaksi KINSUROI', status: 'published', publishedAt: new Date() }
     await db.article.upsert({ where: { slug: a.slug }, update: data, create: data })
   }
   console.log(`✓ ${articles.length} articles`)

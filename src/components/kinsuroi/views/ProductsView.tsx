@@ -4,11 +4,11 @@ import { useMemo } from 'react'
 import { HashLink } from '../router'
 import { Reveal } from '../Reveal'
 import { ProductCard } from '../ProductCard'
-import { useKinsuroi } from '../store'
+import { useK } from '../store'
 
 export function ProductsView({ categorySlug }: { categorySlug?: string }) {
-  const products = useKinsuroi((st) => st.products)
-  const categories = useKinsuroi((st) => st.categories)
+  const products = useK((st) => st.products)
+  const categories = useK((st) => st.categories)
 
   const filtered = useMemo(() => {
     if (!categorySlug) return products
@@ -24,13 +24,13 @@ export function ProductsView({ categorySlug }: { categorySlug?: string }) {
       <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
         {/* Header */}
         <Reveal className="text-center mb-12 md:mb-16">
-          <p className="kicker mb-5">The Collection</p>
+          <p className="kicker mb-5">Koleksi Kami</p>
           <h1 className="font-display text-4xl md:text-6xl text-ink">
-            {activeCategory ? activeCategory.name.toUpperCase() : 'OUR PRODUCTS'}
+            {activeCategory ? activeCategory.name.toUpperCase() : 'PRODUK KAMI'}
           </h1>
           <p className="mt-5 text-muted-foreground font-light max-w-lg mx-auto">
             {activeCategory?.description ||
-              'Every KINSUROI product — cleansers, serums, lip care and body care — in one quiet place.'}
+              'Setiap produk KINSUROI — pembersih, serum, perawatan bibir dan tubuh — dalam satu tempat yang tenang.'}
           </p>
         </Reveal>
 
@@ -43,7 +43,7 @@ export function ProductsView({ categorySlug }: { categorySlug?: string }) {
                 !categorySlug ? 'text-ink link-underline' : 'text-muted-foreground hover:text-ink'
               }`}
             >
-              All
+              Semua
             </HashLink>
             {categories.map((c) => (
               <HashLink
@@ -61,7 +61,7 @@ export function ProductsView({ categorySlug }: { categorySlug?: string }) {
 
         {/* Grid */}
         {filtered.length === 0 ? (
-          <p className="text-center text-muted-foreground py-16">No products in this category yet.</p>
+          <p className="text-center text-muted-foreground py-16">Belum ada produk di kategori ini.</p>
         ) : (
           <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-12 md:gap-x-8 md:gap-y-16">
             {filtered.map((p, i) => (

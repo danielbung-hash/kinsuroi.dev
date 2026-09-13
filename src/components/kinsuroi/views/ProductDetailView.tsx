@@ -6,14 +6,14 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { HashLink, navigate } from '../router'
 import { Reveal, RevealImage } from '../Reveal'
 import { ProductCard } from '../ProductCard'
-import { useKinsuroi, s } from '../store'
+import { useK, s } from '../store'
 import { parseJsonArray, parseLines, type FaqItem, type Product } from '@/lib/types'
 
 /** Elegant empty state for fields the admin has not filled yet */
 function Pending({ label }: { label: string }) {
   return (
     <p className="text-sm text-muted-foreground/70 italic font-light">
-      {label} will be available soon.
+      {label} akan segera tersedia.
     </p>
   )
 }
@@ -28,8 +28,8 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 export function ProductDetailView({ slug }: { slug: string }) {
-  const products = useKinsuroi((st) => st.products)
-  const settings = useKinsuroi((st) => st.settings)
+  const products = useK((st) => st.products)
+  const settings = useK((st) => st.settings)
 
   const product = useMemo(() => products.find((p) => p.slug === slug), [products, slug])
 
@@ -45,10 +45,10 @@ export function ProductDetailView({ slug }: { slug: string }) {
     return (
       <main className="bg-white pt-40 pb-32 text-center px-6">
         <p className="kicker mb-4">404</p>
-        <h1 className="font-display text-4xl text-ink mb-6">Product not found</h1>
-        <p className="text-muted-foreground mb-10">The product you are looking for is not available.</p>
+        <h1 className="font-display text-4xl text-ink mb-6">Produk tidak ditemukan</h1>
+        <p className="text-muted-foreground mb-10">Produk yang kamu cari tidak tersedia.</p>
         <button onClick={() => navigate('/products')} className="btn-primary">
-          BACK TO PRODUCTS
+          KEMBALI KE PRODUK
         </button>
       </main>
     )
@@ -68,7 +68,7 @@ export function ProductDetailView({ slug }: { slug: string }) {
         {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="mb-8 md:mb-12 text-[11px] tracking-[0.2em] uppercase text-muted-foreground">
           <HashLink to="/products" className="hover:text-ink transition-colors">
-            Products
+            Produk
           </HashLink>
           <span className="mx-3 text-line" aria-hidden="true">/</span>
           <span className="text-ink/70">{product.name}</span>
@@ -130,23 +130,23 @@ export function ProductDetailView({ slug }: { slug: string }) {
                 aria-disabled={!buyUrl}
                 className={`btn-primary ${!buyUrl ? 'pointer-events-none opacity-40' : ''}`}
               >
-                BUY NOW
+                BELI SEKARANG
               </a>
               {s(settings, 'social_shopee', '') && (
                 <a href={s(settings, 'social_shopee', '')} target="_blank" rel="noopener noreferrer" className="btn-outline">
-                  BUY ON SHOPEE
+                  BELI DI SHOPEE
                 </a>
               )}
             </div>
             {!buyUrl && (
               <p className="mt-3 text-xs text-muted-foreground/70 font-light">
-                Official purchase links will be available soon.
+                Link pembelian resmi akan segera tersedia.
               </p>
             )}
 
             {/* Structured info */}
             <div className="mt-12 border-t border-line">
-              <Section title="Benefits">
+              <Section title="Manfaat">
                 {benefits.length ? (
                   <ul className="space-y-2.5">
                     {benefits.map((b, i) => (
@@ -157,11 +157,11 @@ export function ProductDetailView({ slug }: { slug: string }) {
                     ))}
                   </ul>
                 ) : (
-                  <Pending label="Detailed benefits" />
+                  <Pending label="Manfaat lengkap" />
                 )}
               </Section>
 
-              <Section title="Ingredients">
+              <Section title="Komposisi">
                 {ingredients.length ? (
                   <ul className="space-y-2 text-sm text-ink/80 leading-relaxed">
                     {ingredients.map((g, i) => (
@@ -169,11 +169,11 @@ export function ProductDetailView({ slug }: { slug: string }) {
                     ))}
                   </ul>
                 ) : (
-                  <Pending label="Full ingredient list" />
+                  <Pending label="Daftar komposisi lengkap" />
                 )}
               </Section>
 
-              <Section title="How to use">
+              <Section title="Cara Penggunaan">
                 {howToUse.length ? (
                   <ol className="space-y-2.5">
                     {howToUse.map((st, i) => (
@@ -184,15 +184,15 @@ export function ProductDetailView({ slug }: { slug: string }) {
                     ))}
                   </ol>
                 ) : (
-                  <Pending label="Usage directions" />
+                  <Pending label="Panduan penggunaan" />
                 )}
               </Section>
 
-              <Section title="Suitable for">
+              <Section title="Cocok Untuk">
                 {suitableFor.length ? (
                   <p className="text-sm text-ink/80 leading-relaxed">{suitableFor.join(' · ')}</p>
                 ) : (
-                  <Pending label="Suitability information" />
+                  <Pending label="Informasi kesesuaian kulit" />
                 )}
               </Section>
 
@@ -220,8 +220,8 @@ export function ProductDetailView({ slug }: { slug: string }) {
         {related.length > 0 && (
           <div className="mt-24 md:mt-32">
             <Reveal className="text-center mb-12">
-              <p className="kicker mb-4">Continue the ritual</p>
-              <h2 className="font-display text-3xl md:text-4xl text-ink">YOU MAY ALSO LIKE</h2>
+              <p className="kicker mb-4">Lanjutkan ritual</p>
+              <h2 className="font-display text-3xl md:text-4xl text-ink">PRODUK LAINNYA</h2>
             </Reveal>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-12 md:gap-x-8">
               {related.map((p: Product, i) => (

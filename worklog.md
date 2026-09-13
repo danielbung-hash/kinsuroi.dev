@@ -25,3 +25,26 @@ Stage Summary:
 - Verified end-to-end with Agent Browser: home/products/filter/detail/journal/article/about/contact/coming-soon all render; mobile 390px + hamburger OK; sticky footer OK; admin login + product editor + social-URL save reflected live on storefront footer; zero console errors; lint clean
 - Preview URL serves on `/`; admin at `#/admin` (default password: kinsuroi-admin, changeable in CMS)
 - Migration path to production Supabase documented in supabase/README.md + supabase/schema.sql
+
+---
+Task ID: 2
+Agent: Super Z (main agent)
+Task: Konversi SPA hash-routing menjadi 5 halaman terpisah (real Next.js routes) + terjemahan seluruh konten ke Bahasa Indonesia
+
+Work Log:
+- Rewrote src/components/kinsuroi/router.tsx: HashLink now wraps next/link; navigate() uses an app-router bridge (setAppRouter) with scroll-to-top
+- Created SiteShell.tsx: shared client shell providing BootstrapContext (server-fetched Prisma data) + Navbar/Footer for every real route
+- Created src/lib/data.ts (getBootstrapData) and 9 route pages: /, /products (+?category=), /products/[slug] (generateMetadata from product), /about, /journal, /journal/[slug] (generateMetadata from article), /contact, /coming-soon?page=, /admin (bare AdminView, noindex)
+- Added loading.tsx (elegant brand loader), not-found.tsx (styled 404 inside SiteShell), sitemap.ts (static + product + article URLs)
+- Deleted KinsuroiApp.tsx (SPA hash shell no longer needed)
+- Fixed critical SSR bug: Zustand store was empty during server render → product detail rendered "not found" in SSR HTML. Solution: BootstrapContext (context-first useK hook, Zustand fallback for admin); SSR HTML now contains full content (SEO-safe)
+- Navbar: Indonesian labels (Beranda/Produk/Tentang/Journal/Kontak), active-state via usePathname (bronze highlight), mobile menu closes on link click
+- Translated all storefront UI to Indonesian: hero "KECANTIKANMU, RITUALMU.", "JELAJAHI KOLEKSI KAMI", "TEMUKAN RITUAL KECANTIKANMU", BELI SEKARANG/LIHAT PRODUK/HUBUNGI KAMI, footer NAVIGASI/PELANGGAN/BELANJA, product sections Manfaat/Komposisi/Cara Penggunaan/Cocok Untuk, date formatting id-ID, ComingSoon Indonesian title map
+- Re-seeded DB (scripts/seed.ts, upsert by slug/key): categories (Perawatan Wajah/Serum/Perawatan Bibir/Perawatan Tubuh), 11 products shortDesc in Indonesian, 3 journal articles fully rewritten in Indonesian (titles, topics, excerpts, content, SEO), 27 settings (hero/brand/CTA/footer Indonesian + CTA URLs now real paths /products, /about)
+- layout.tsx: lang="id", metadata + OpenGraph Indonesian, locale id_ID
+- Fixed hero overflow with long word "KECANTIKANMU," (text-[2.5rem] md:text-5xl lg:text-6xl); lint setState-in-effect fix (menu closes via onClick)
+
+Stage Summary:
+- Verified via Agent Browser (desktop 1280px + mobile 390px): all 9 routes return 200, client-side nav works (menu → /products, card → detail), mobile hamburger opens/navigates/closes, active nav highlight works, 404 page styled, sitemap.xml + robots.txt 200, zero console errors, lint clean
+- SSR HTML verified to contain full product/article/hero content (grep on curl output)
+- URLs now shareable as real paths: /products/kinsuroi-soft-cleanser-gel, /journal/the-ritual-of-body-care, dst.

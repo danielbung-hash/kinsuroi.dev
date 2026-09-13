@@ -7,38 +7,38 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://kinsuroi.com";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "KINSUROI — Your Beauty, Your Ritual. | Official Website",
+    default: "KINSUROI — Kecantikanmu, Ritualmu. | Situs Resmi",
     template: "%s | KINSUROI",
   },
   description:
-    "Official KINSUROI website. Discover a simple and elegant beauty ritual — cleansers, serums, lip care and body care, thoughtfully made. Clean. Quiet. Elegant. Trustworthy.",
+    "Situs resmi KINSUROI. Temukan ritual kecantikan yang sederhana dan elegan — pembersih, serum, perawatan bibir dan tubuh, dibuat dengan penuh pertimbangan. Bersih. Tenang. Elegan. Terpercaya.",
   keywords: [
     "KINSUROI",
     "skincare",
     "clean beauty",
-    "luxury skincare",
+    "perawatan wajah",
     "serum",
-    "cleanser",
+    "pembersih wajah",
     "lip balm",
-    "body care",
+    "perawatan tubuh",
   ],
   applicationName: "KINSUROI",
   authors: [{ name: "KINSUROI" }],
   alternates: { canonical: "/" },
   openGraph: {
-    title: "KINSUROI — Your Beauty, Your Ritual.",
+    title: "KINSUROI — Kecantikanmu, Ritualmu.",
     description:
-      "Discover a simple and elegant beauty ritual with KINSUROI. Explore the full collection on the official website.",
+      "Temukan ritual kecantikan yang sederhana dan elegan bersama KINSUROI. Jelajahi koleksi lengkap di situs resmi kami.",
     url: SITE_URL,
     siteName: "KINSUROI",
     type: "website",
-    locale: "en_US",
-    images: [{ url: "/images/hero.jpg", width: 864, height: 1152, alt: "KINSUROI — elegant beauty ritual" }],
+    locale: "id_ID",
+    images: [{ url: "/images/hero.jpg", width: 864, height: 1152, alt: "KINSUROI — ritual kecantikan yang elegan" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "KINSUROI — Your Beauty, Your Ritual.",
-    description: "Discover a simple and elegant beauty ritual with KINSUROI.",
+    title: "KINSUROI — Kecantikanmu, Ritualmu.",
+    description: "Temukan ritual kecantikan yang sederhana dan elegan bersama KINSUROI.",
     images: ["/images/hero.jpg"],
   },
   robots: { index: true, follow: true },
@@ -82,7 +82,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="id" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
