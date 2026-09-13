@@ -1,0 +1,81 @@
+// KINSUROI — Database schema
+// Mirrors the Supabase/PostgreSQL design (see supabase/schema.sql for the production version).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Product categories (Face Care, Serum, Lip Care, Body Care, ...) ───
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+}
+
+// ─── Products ───
+model Product {
+  id             String    @id @default(cuid())
+  name           String
+  slug           String    @unique
+  categoryId     String?
+  category       Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  shortDesc      String?
+  description    String?
+  // Long-form fields — stored as plain text (lists are newline-separated)
+  benefits       String?
+  ingredients    String?
+  howToUse       String?
+  suitableFor    String?
+  // Media
+  image          String?
+  gallery        String? // JSON array of image URLs
+  // Structured FAQ — JSON array of { question, answer }
+  faq            String?
+  // Publishing
+  status         String    @default("published") // "draft" | "published"
+  featured       Boolean   @default(false)
+  order          Int       @default(0)
+  // Commerce — editable via CMS, never hardcoded
+  marketplaceUrl String?
+  // SEO
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// ─── Journal articles ───
+model Article {
+  id             String    @id @default(cuid())
+  title          String
+  slug           String    @unique
+  excerpt        String?
+  content        String?
+  thumbnail      String?
+  author         String    @default("KINSUROI Editorial")
+  topic          String? // e.g. Routine, Tips, Education, Lifestyle
+  publishedAt    DateTime?
+  seoTitle       String?
+  seoDescription String?
+  status         String    @default("draft") // "draft" | "published"
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// ─── Website content / social links / contact / admin — key-value CMS ───
+model SiteSetting {
+  key       String   @id
+  value     String
+  group     String   @default("general") // "hero" | "brand" | "cta" | "footer" | "contact" | "social" | "admin"
+  updatedAt DateTime @updatedAt
+}
