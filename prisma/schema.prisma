@@ -1,7 +1,7 @@
 // KINSUROI — Database schema
 // Mirrors the Supabase/PostgreSQL design (see supabase/schema.sql for the production version).
 
-ggenerator client {
+generator client {
   provider = "prisma-client-js"
 }
 
