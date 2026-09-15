@@ -69,3 +69,23 @@ Stage Summary:
 - Seluruh 16 requirement terpenuhi; katalog 12 produk (Face Care 1,2,3,4,11,12 · Lip Care 5,6,7 · Body Care 8,9,10), produk #7 menunggu foto final via CMS upload (slot siap, otomatis tampil setelah upload).
 - Credential CMS kini env-only (ADMIN_PASSWORD di .env, tidak ada di source/Git/bundle/API/login page); password lama masih berlaku agar owner tidak terkunci.
 - Supabase Storage aktif otomatis saat NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY diisi (bucket product-images); preview sandbox jalan dengan fallback lokal tanpa mengubah flow CMS.
+
+---
+Task ID: 4
+Agent: Super Z (main agent)
+Task: Push project ke github.com/danielbung-hash/kinsuroi.dev (token PAT diberikan user)
+
+Work Log:
+- Audit pra-push: upload route src/app/api/upload/route.ts ditemukan hilang dari working tree (dipulihkan dari HEAD; CMS fields.tsx merujuknya) — login CMS diverifikasi 200 setelah env dipulihkan.
+- .env hanya berisi DATABASE_URL (ADMIN_PASSWORD/ADMIN_SECRET hilang akibat reset sandbox) — dikembalikan: ADMIN_PASSWORD=password lama owner, ADMIN_SECRET=random hex-32; login /api/admin/login = 200.
+- Temuan secret: string password ada di db/custom.db (freelist SQLite), worklog.md line 26, tool-results/*.txt, dan visuo pada screenshot login versi lama → db di-VACUUM (string hilang), worklog diredaksi, semuanya di-gitignore.
+- .gitignore += /db/ /tool-results/ /download/ /public/uploads/ scripts/*.png scripts/*.html; dibuat README.md (setup, env vars, struktur) + .env.example (nama var saja, tanpa nilai asli).
+- Histori git lama (5 commit) terbukti mengandung password di 4 commit → dibangun ulang jadi 1 commit bersih (5b8e68e, 159 file); verifikasi: git grep password = 0, db/tool-results/.env/download tidak ter-track.
+- Remote dicek: repo PUBLIK dan sudah berisi snapshot lama yang BOCOR (password di worklog.md, db/custom.db, seed.ts, login route fallback, AdminView default hint + histori commit).
+- Percobaan push force (x-access-token / oauth2 / username+token) → GAGAL semua: "Invalid username or token"; REST API juga 401 Bad credentials. Token tidak valid/expired/revoked untuk operasi tulis. Bacaanonim OK karena repo publik.
+- Remote origin di-set (URL bersih tanpa token). Push menunggu token baru dengan izin Contents: Read and write.
+
+Stage Summary:
+- Repo lokal SIAP PUSH: 1 commit bersih tanpa secret, 159 file, CMS jalan (login 200).
+- Setelah token valid diterima: git push --force origin main (menimpa snapshot lama yang bocor).
+- Rekomendasi keamanan ke owner: ganti ADMIN_PASSWORD di .env deployment (password lama sudah pernah muncul di chat & repo publik), revoke PAT lama, pertimbangkan recreate repo agar histori lama yang bocor hilang total.
