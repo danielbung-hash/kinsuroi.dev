@@ -179,6 +179,24 @@ function schemaClient(): { client: PrismaClient; ephemeral: boolean } {
   return { client: db, ephemeral: false }
 }
 
+// Single sentinel query — if every condition below is true, the database is
+// already at the current schema and ALL DDL/ALTER statements can be skipped.
+// This keeps cold starts fast (1 round-trip instead of 50+) while still
+// self-healing databases provisioned by older builds.
+const SCHEMA_UP_TO_DATE_SQL = `SELECT (
+  to_regclass('"Category"') IS NOT NULL
+  AND to_regclass('"Product"') IS NOT NULL
+  AND to_regclass('"Article"') IS NOT NULL
+  AND to_regclass('"SiteSetting"') IS NOT NULL
+  AND to_regclass('"Testimonial"') IS NOT NULL
+  AND EXISTS (SELECT 1 FROM information_schema.columns
+              WHERE table_schema = 'public' AND table_name = 'Product' AND column_name = 'problem')
+  AND EXISTS (SELECT 1 FROM information_schema.columns
+              WHERE table_schema = 'public' AND table_name = 'Product' AND column_name = 'purchaseUrl')
+  AND EXISTS (SELECT 1 FROM information_schema.columns
+              WHERE table_schema = 'public' AND table_name = 'Article' AND column_name = 'publishedAt')
+) AS up_to_date`
+
 async function provision(): Promise<void> {
   const { client, ephemeral } = schemaClient()
   // Column/constraint healing is PostgreSQL-only: production always hits
@@ -187,28 +205,44 @@ async function provision(): Promise<void> {
   const runtimeUrl = (process.env.DATABASE_URL ?? '').trim().toLowerCase()
   const isPostgres = ephemeral || runtimeUrl.startsWith('postgres')
   try {
-    // DDL is idempotent (CREATE TABLE IF NOT EXISTS) and cheap — always run it
-    // so tables added in newer releases (e.g. "Testimonial") are created even
-    // on databases that were provisioned by an older version of the site.
-    for (const stmt of DDL) {
-      await client.$executeRawUnsafe(stmt)
+    // Fast path — schema already current → straight to the seed check.
+    // (Huge cold-start win on serverless: one SELECT vs 50+ DDL round-trips.)
+    let upToDate = false
+    if (isPostgres) {
+      try {
+        const rows = (await client.$queryRawUnsafe<{ up_to_date: boolean }>(SCHEMA_UP_TO_DATE_SQL)) as unknown as {
+          up_to_date: boolean
+        }[]
+        upToDate = Array.isArray(rows) && rows[0]?.up_to_date === true
+      } catch {
+        upToDate = false // tables missing / legacy shape → full heal below
+      }
     }
 
-    // Widen tables provisioned by older builds so every column the current
-    // Prisma client expects exists (fixes "column … does not exist" 500s).
-    // Each statement is independent — one failure never blocks the rest.
-    if (isPostgres) {
-      for (const stmt of ALTERS) {
-        try {
-          await client.$executeRawUnsafe(stmt)
-        } catch (e) {
-          console.warn('kinsuroi: column heal skipped —', e instanceof Error ? e.message.split('\n')[0] : e)
-        }
+    if (!upToDate) {
+      // DDL is idempotent (CREATE TABLE IF NOT EXISTS) and cheap — always run it
+      // so tables added in newer releases (e.g. "Testimonial") are created even
+      // on databases that were provisioned by an older version of the site.
+      for (const stmt of DDL) {
+        await client.$executeRawUnsafe(stmt)
       }
-      try {
-        await client.$executeRawUnsafe(FK_HEAL)
-      } catch (e) {
-        console.warn('kinsuroi: FK heal skipped —', e instanceof Error ? e.message.split('\n')[0] : e)
+
+      // Widen tables provisioned by older builds so every column the current
+      // Prisma client expects exists (fixes "column … does not exist" 500s).
+      // Each statement is independent — one failure never blocks the rest.
+      if (isPostgres) {
+        for (const stmt of ALTERS) {
+          try {
+            await client.$executeRawUnsafe(stmt)
+          } catch (e) {
+            console.warn('kinsuroi: column heal skipped —', e instanceof Error ? e.message.split('\n')[0] : e)
+          }
+        }
+        try {
+          await client.$executeRawUnsafe(FK_HEAL)
+        } catch (e) {
+          console.warn('kinsuroi: FK heal skipped —', e instanceof Error ? e.message.split('\n')[0] : e)
+        }
       }
     }
 
