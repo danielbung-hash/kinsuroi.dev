@@ -299,3 +299,17 @@ Work Log:
 Stage Summary:
 - Website 6-79x faster; region co-located with DB via vercel.json (no dashboard change needed)
 - Still pending user action: replace SUPABASE_SERVICE_ROLE_KEY in Vercel with verified-correct service JWT (tested working against storage API directly), then Redeploy; final E2E upload test after that
+
+---
+Task ID: 16
+Agent: main (Super Z)
+Task: Add social marketplace links to production site
+
+Work Log:
+- User confirmed upload now works after updating SUPABASE_SERVICE_ROLE_KEY (testimonials section also confirmed visible by user)
+- PUT /api/settings on production (admin session): social_shopee=https://shopee.co.id/kinsuroi, social_tiktok=https://www.tiktok.com/@kinsuroi, social_instagram=https://www.instagram.com/kinsuroi
+- Verified via public /api/bootstrap + homepage HTML: all 3 links rendered in footer
+
+Stage Summary:
+- Social links live; prod upload pipeline confirmed working end-to-end by user
+- Remaining optional: user uploads real customer testimonial photos via CMS Testimoni tab; social_youtube/social_facebook intentionally left empty
