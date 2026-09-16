@@ -604,6 +604,7 @@ const COMPANY_SECTIONS: { title: string; fields: CompanyField[] }[] = [
     fields: [
       { key: 'company_lab_image', label: 'Foto formulasi', image: true },
       { key: 'company_production', label: 'Narasi utama', area: true },
+      { key: 'company_lab', label: 'Lab & Produksi', area: true },
       { key: 'company_encapsulation', label: 'Bahan Baku Encapsulation', area: true },
       { key: 'company_natural', label: 'Ekstrak Alami Indonesia', area: true },
     ],

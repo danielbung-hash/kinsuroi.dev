@@ -111,24 +111,14 @@ function schemaClient(): { client: PrismaClient; ephemeral: boolean } {
   return { client: db, ephemeral: false }
 }
 
-/** True when the CMS tables already exist and are queryable. */
-async function tablesExist(client: PrismaClient): Promise<boolean> {
-  try {
-    await client.$queryRawUnsafe('SELECT 1 FROM "Category" LIMIT 1')
-    return true
-  } catch {
-    return false
-  }
-}
-
 async function provision(): Promise<void> {
   const { client, ephemeral } = schemaClient()
   try {
-    if (!(await tablesExist(client))) {
-      for (const stmt of DDL) {
-        await client.$executeRawUnsafe(stmt)
-      }
-      console.log('kinsuroi: database schema created')
+    // DDL is idempotent (CREATE TABLE IF NOT EXISTS) and cheap — always run it
+    // so tables added in newer releases (e.g. "Testimonial") are created even
+    // on databases that were provisioned by an older version of the site.
+    for (const stmt of DDL) {
+      await client.$executeRawUnsafe(stmt)
     }
 
     // Seed only a truly empty catalog — never touch an owner-populated one.

@@ -91,6 +91,7 @@ export function AboutView() {
   const responsibility = s(settings, 'company_responsibility', '').trim()
   const quote = s(settings, 'company_quote', '').trim()
   const production = s(settings, 'company_production', '').trim()
+  const lab = s(settings, 'company_lab', '').trim()
   const labImage = s(settings, 'company_lab_image', '/images/company/company-founder-lab.jpg').trim()
   const encapsulation = s(settings, 'company_encapsulation', '').trim()
   const natural = s(settings, 'company_natural', '').trim()
@@ -216,6 +217,12 @@ export function AboutView() {
                 {production ? <Paragraphs raw={production} /> : <EmptyNote />}
               </div>
             </div>
+            {lab && (
+              <div className="py-6 border-t border-line">
+                <p className="font-display text-2xl text-ink mb-3">Lab &amp; Produksi</p>
+                <Paragraphs raw={lab} />
+              </div>
+            )}
             {encapsulation && (
               <div className="py-6 border-t border-line">
                 <p className="font-display text-2xl text-ink mb-3">Bahan Baku Encapsulation</p>

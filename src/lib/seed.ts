@@ -127,16 +127,16 @@ export const settings: { key: string; value: string; group: string }[] = [
   // Footer
   { key: 'footer_text', value: 'Bersih. Tenang. Elegan. Terpercaya.', group: 'footer' },
   { key: 'footer_copyright', value: '© KINSUROI. Hak cipta dilindungi.', group: 'footer' },
-  // Contact
+  // Contact — exactly as written in the official company profile PDF
   {
     key: 'contact_address',
     value:
-      'Komp. Sentra Niaga Surya Kadu Blok F No.9, Kadujaya RT 001/001, Kec. Curug, Jl. Raya Telesonik No.10, Kota Tangerang, Banten 15810, Indonesia',
+      'Komplek Sentra Niaga Surya Kadu Blok F.9, Jl. Raya Telesonik No. 10, RT.001/RW.001, Kadu Jaya, Kec. Curug, Kabupaten Tangerang, Banten 15810',
     group: 'contact',
   },
   { key: 'contact_phone_1', value: '+62 21 29437988', group: 'contact' },
   { key: 'contact_phone_2', value: '+62 21 29437987', group: 'contact' },
-  { key: 'contact_email', value: '', group: 'contact' },
+  { key: 'contact_email', value: 'danieramardika@gmail.com', group: 'contact' },
   { key: 'contact_whatsapp', value: '085888244750', group: 'contact' },
   // Company profile ("Tentang") — follows the owner's official PDF
   // "Company Profile — PT Dani Era Mardika". Editable via CMS at any time.
@@ -184,6 +184,12 @@ export const settings: { key: string; value: string; group: string }[] = [
     group: 'company',
   },
   {
+    key: 'company_lab',
+    value:
+      'Setiap formula dikembangkan, diuji, disempurnakan, dan diproduksi secara in-house di bawah kendali langsung PT Dani Era Mardika. Pendekatan ini memungkinkan proses R&D hingga produk akhir dikontrol secara konsisten, dengan setiap formula dapat dievaluasi dan disesuaikan berdasarkan hasil riset dan kondisi nyata konsumen Indonesia.',
+    group: 'company',
+  },
+  {
     key: 'company_encapsulation',
     value:
       'Zat aktif tertentu dikembangkan menggunakan teknologi micro-encapsulation, termasuk Ascorbic Acid, Bakuchiol, Niacinamide, Retinol, Tranexamic Acid, Ceramide, dan lainnya. PT Dani Era Mardika memiliki hak import bahan baku secara langsung serta mengembangkan sistem encapsulation dengan pendekatan teknologi farmasi, untuk meningkatkan stabilitas terhadap oksidasi, kompatibilitas formulasi, skin delivery, dan efektivitas zat aktif.',
@@ -225,14 +231,62 @@ export const settings: { key: string; value: string; group: string }[] = [
   { key: 'company_factory_image', value: '/images/company/company-facility.jpg', group: 'company' },
   { key: 'company_lab_image', value: '/images/company/company-founder-lab.jpg', group: 'company' },
   // Social media (official channels — editable via CMS)
+  { key: 'social_instagram', value: 'https://www.instagram.com/kinsuroi', group: 'social' },
   { key: 'social_shopee', value: '', group: 'social' },
   { key: 'social_tiktok', value: '', group: 'social' },
   { key: 'social_youtube', value: '', group: 'social' },
-  { key: 'social_instagram', value: '', group: 'social' },
   { key: 'social_facebook', value: '', group: 'social' },
   // NOTE: no admin_password here — the CMS credential lives in the
   // server-side ADMIN_PASSWORD environment variable only.
 ]
+
+/**
+ * Official product claims lifted verbatim from the "PRODUCT PORTFOLIO"
+ * section of the owner's Company Profile PDF. Applied by the seed ONLY to
+ * products whose "benefits" (Manfaat) field is still empty — owner-entered
+ * claims are never overwritten.
+ */
+export const productClaims: Record<string, string> = {
+  'kinsuroi-soft-cleanser-gel': 'BHA + Skin Barrier Kompleks',
+  'kinsuroi-l-active-c':
+    'Encapsulasi L-Ascorbic Acid + Niacinamide + Vitamin E + Coenzyme Q10 + Barrier Kompleks',
+  'kinsuroi-retinol-serum':
+    'Encapsulasi Retinol + Bakuchiol + Niacinamide + Tranexamic Acid + Barrier Kompleks',
+  'kinsuroi-lipbalm': 'Peptide + Encapsulasi Vitamin E + Coenzyme Q10',
+  'kinsuroi-shower-oel': 'Konsep SPA Germany',
+  'kinsuroi-body-oel': 'SPA Oil Wangi Rose Prancis',
+  'kinsuroi-body-lotion-retinol':
+    'Retinol + Bakuchiol + Niacinamide + TXA + Urea + Barrier Kompleks',
+}
+
+/** Fill a product's EMPTY benefits field with the official PDF claim (if any). */
+async function fillEmptyClaims(client: PrismaClient): Promise<number> {
+  let filled = 0
+  for (const [slug, benefits] of Object.entries(productClaims)) {
+    const p = await client.product.findUnique({ where: { slug } })
+    if (p && !(p.benefits ?? '').trim()) {
+      await client.product.update({ where: { slug }, data: { benefits } })
+      filled++
+    }
+  }
+  return filled
+}
+
+// Address auto-seeded by an earlier release (abbreviated wording). Refreshed
+// to the official PDF wording ONLY when still byte-equal — i.e. never edited
+// by the owner in the CMS.
+const LEGACY_ADDRESS =
+  'Komp. Sentra Niaga Surya Kadu Blok F No.9, Kadujaya RT 001/001, Kec. Curug, Jl. Raya Telesonik No.10, Kota Tangerang, Banten 15810, Indonesia'
+
+async function refreshLegacyAddress(client: PrismaClient): Promise<void> {
+  const row = await client.siteSetting.findUnique({ where: { key: 'contact_address' } })
+  if (row && row.value.trim() === LEGACY_ADDRESS) {
+    const official = settings.find((s) => s.key === 'contact_address')?.value
+    if (official) {
+      await client.siteSetting.update({ where: { key: 'contact_address' }, data: { value: official } })
+    }
+  }
+}
 
 /**
  * Idempotent seed — safe to run against an empty or partially-filled database.
@@ -264,6 +318,10 @@ export async function seedDatabase(client: PrismaClient): Promise<void> {
   await client.category.deleteMany({ where: { slug: 'serum' } })
   // Never keep a credential row in the DB
   await client.siteSetting.deleteMany({ where: { key: 'admin_password' } })
+
+  // Official PDF claims → products whose Manfaat is still blank
+  await fillEmptyClaims(client)
+  await refreshLegacyAddress(client)
 
   for (const a of articles) {
     const data = { ...a, author: 'Redaksi KINSUROI', status: 'published', publishedAt: new Date() }
@@ -344,6 +402,10 @@ export async function seedMissing(client: PrismaClient): Promise<SeedReport> {
   // Same housekeeping as the full seed
   await client.category.deleteMany({ where: { slug: 'serum' } })
   await client.siteSetting.deleteMany({ where: { key: 'admin_password' } })
+
+  // Official PDF claims → products whose Manfaat is still blank
+  report.products += await fillEmptyClaims(client)
+  await refreshLegacyAddress(client)
 
   return report
 }
