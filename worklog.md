@@ -263,3 +263,24 @@ Stage Summary:
 - GitHub repo kinsuroi.dev is fully up to date; Vercel will auto-redeploy with new SUPABASE_SERVICE_ROLE_KEY + PDF seed + DDL fix
 - Admin credential confirmed working end-to-end: DBLiugma882207* (local .env updated to match)
 - Next user steps: wait for Vercel deploy -> /admin -> SEED / REPAIR CONTENT -> upload Testimoni photo; consider rotating ADMIN_PASSWORD later since it was shared in chat
+
+---
+Task ID: 14
+Agent: main (Super Z)
+Task: Production bug testing — products missing, CMS broken, upload failing
+
+Work Log:
+- Probed production https://kinsuroi-dev.vercel.app: /api/products -> HTTP 500 empty body while categories/articles/testimonials returned 200
+- Logged in to prod CMS with user password; POST /api/seed surfaced real error: "The column Product.problem does not exist in the current database"
+- Root cause 1 (SCHEMA DRIFT): prod "Product" table was provisioned by the first-era build BEFORE columns problem/purchaseUrl/marketplaceUrl/seo* existed; CREATE TABLE IF NOT EXISTS never widens existing tables -> every Product query 500 -> products missing, CMS writes failing
+- Fix 1: db-setup.ts now runs idempotent ALTER TABLE ADD COLUMN IF NOT EXISTS for ALL columns of all 5 tables + FK heal via DO block (postgres-only, per-statement try/catch)
+- Fix 2: hardened naked GETs (products/categories/articles/settings) to return JSON errors instead of empty 500s
+- Fix 3: supabase/schema.sql marked REFERENCE-ONLY with warning (snake_case Supabase-Auth paradigm, not used by the app)
+- Pushed 4991b6f; next deploy auto-healed prod DB on first request: /api/products -> 200 with 12 products; detail pages 200; POST /api/seed -> ok:true (111s)
+- Root cause 2 (UPLOAD): E2E upload test -> Supabase Storage HTTP 400; after instrumenting storage.ts to surface real Supabase message (1531a39): "Invalid Compact JWS" AccessDenied 403 -> SUPABASE_SERVICE_ROLE_KEY on Vercel is invalid/truncated/wrong key
+- Cleanup: no test data left in prod (upload failed before testimonial create; nothing to delete)
+
+Stage Summary:
+- FIXED & LIVE: products catalog, product detail pages, seed/repair, CMS auth, Testimonial table
+- REMAINING (user action): replace SUPABASE_SERVICE_ROLE_KEY value in Vercel with the full service_role JWT from Supabase Dashboard -> Settings -> API, then Redeploy; uploads (bucket auto-create) will then work
+- Verified working admin password: DBLiugma882207* (matches local .env now)
