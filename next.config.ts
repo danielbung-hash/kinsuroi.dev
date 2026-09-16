@@ -1,9 +1,28 @@
 import type { NextConfig } from "next";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseHost = supabaseUrl
-  ? new URL(supabaseUrl).hostname
-  : null;
+/**
+ * Parse the Supabase project host from env — safely.
+ *
+ * The build must NEVER crash when this variable is missing, empty, or
+ * malformed (e.g. an env var added on the host with a blank value):
+ * `new URL("")` throws and kills the whole build. Any invalid value is
+ * ignored instead; the wildcard *.supabase.co / *.supabase.in patterns
+ * below keep image optimization working for real Supabase hosts.
+ */
+function supabaseHostFromEnv(): string | null {
+  const raw = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  if (!raw) return null;
+  try {
+    return new URL(raw).hostname || null;
+  } catch {
+    console.warn(
+      "[next.config] NEXT_PUBLIC_SUPABASE_URL is not a valid URL — ignored for image config."
+    );
+    return null;
+  }
+}
+
+const supabaseHost = supabaseHostFromEnv();
 
 const nextConfig: NextConfig = {
   output: "standalone",

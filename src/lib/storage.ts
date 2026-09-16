@@ -31,10 +31,20 @@ export type SaveResult = {
 }
 
 function supabaseConfig() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/$/, '')
+  const raw = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-  if (!url || !serviceKey) return null
-  return { url, serviceKey }
+  if (!raw || !serviceKey) return null
+  try {
+    // Validate before building request URLs from it — an invalid value
+    // (blank/malformed env var) gracefully falls back to local storage
+    // instead of crashing every upload at runtime.
+    const parsed = new URL(raw)
+    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return null
+    return { url: parsed.origin, serviceKey }
+  } catch {
+    console.warn('[storage] NEXT_PUBLIC_SUPABASE_URL invalid — using local storage fallback.')
+    return null
+  }
 }
 
 export function storageMode(): 'supabase' | 'local' {

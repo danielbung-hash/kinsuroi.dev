@@ -103,3 +103,19 @@ Work Log:
 Stage Summary:
 - github.com/danielbung-hash/kinsuroi.dev kini berisi versi bersih final project KINSUROI.
 - Sisa tindakan owner: revoke kedua token lama yang pernah dikirim di chat, ganti ADMIN_PASSWORD di .env deployment, (opsional) purge histori lama via GitHub Support / recreate repo agar commit bocor tidak reachable by SHA.
+
+---
+Task ID: 6
+Agent: Super Z (main agent)
+Task: Fix build error Vercel — TypeError: Invalid URL di next.config
+
+Work Log:
+- Akar masalah: next.config.ts memanggil new URL(process.env.NEXT_PUBLIC_SUPABASE_URL) saat load; env var yang di-set KOSONG/tidak valid di Vercel → new URL("") throw → build mati (ERR_INVALID_URL, input [REDACTED] = env var).
+- Fix next.config.ts: supabaseHostFromEnv() — trim, guard kosong, try/catch; nilai invalid diabaikan dengan warning (wildcard **.supabase.co tetap mencakup host asli).
+- Fix src/lib/storage.ts: supabaseConfig() memvalidasi URL (parse + protokol http/https) sebelum dipakai; invalid → fallback local storage, tidak crash runtime.
+- Verifikasi: NEXT_PUBLIC_SUPABASE_URL="" bun run build → EXIT 0, semua route ter-compile (statis + dinamis).
+- Dev server sandbox di-restart, preview HTTP 200.
+
+Stage Summary:
+- Build tahan terhadap env Supabase hilang/kosong/salah; deploy Vercel bisa di-retry.
+- Catatan owner: isi NEXT_PUBLIC_SUPABASE_URL (https://<ref>.supabase.co) + SUPABASE_SERVICE_ROLE_KEY di Vercel jika ingin Storage aktif — tanpa itu upload CMS jatuh ke disk lokal yang ephemeral di Vercel.
