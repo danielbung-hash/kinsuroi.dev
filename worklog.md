@@ -246,3 +246,20 @@ Stage Summary:
 - GitHub repo sudah berisi semua perbaikan; Vercel auto-deploy berjalan.
 - Owner: tunggu deploy selesai (~2-3 menit), login /admin dengan password baru, klik SEED / REPAIR CONTENT (mengisi konten PDF + klaim produk + membuat tabel Testimonial di Supabase), lalu upload foto testimoni di tab Testimoni.
 - Saran keamanan: revoke PAT ini setelah dipakai (sudah pernah tampil di chat), sama seperti token-token sebelumnya.
+
+---
+Task ID: 13
+Agent: main (Super Z)
+Task: Push pending commits with new PAT + verify admin login with user-provided password
+
+Work Log:
+- Checked repo state: 7dec341 (PDF seed + always-run DDL) and 48c42eb (SQLite schema removal) were already on origin/main; only worklog commit 9cb2b2a was pending
+- Pushed 5042d4b..9cb2b2a to origin/main using user's new PAT (exit 0), then immediately removed token from remote URL
+- Compared local .env ADMIN_PASSWORD with user-provided password: mismatch (14 vs 15 chars) - explains earlier login failures
+- Updated .env ADMIN_PASSWORD to user-provided value; Next.js dev server picked it up automatically
+- E2E verified: POST /api/admin/login -> {"ok":true}; session cookie issued and validated via GET; POST /api/seed with auth -> {"ok":true,"categories":0,"products":0,"articles":0,"settings":0} (idempotent, local DB already seeded)
+
+Stage Summary:
+- GitHub repo kinsuroi.dev is fully up to date; Vercel will auto-redeploy with new SUPABASE_SERVICE_ROLE_KEY + PDF seed + DDL fix
+- Admin credential confirmed working end-to-end: DBLiugma882207* (local .env updated to match)
+- Next user steps: wait for Vercel deploy -> /admin -> SEED / REPAIR CONTENT -> upload Testimoni photo; consider rotating ADMIN_PASSWORD later since it was shared in chat
