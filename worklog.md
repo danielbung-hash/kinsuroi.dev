@@ -150,3 +150,16 @@ Work Log:
 
 Stage Summary:
 - Deploy berikutnya self-provisioning: kunjungan pertama membuat tabel + mengisi data di Supabase otomatis. Fallback manual: prisma db push + bun scripts/seed.ts.
+
+---
+Task ID: 9
+Agent: Super Z (main agent)
+Task: Deploy produksi live & terverifikasi
+
+Work Log:
+- Vercel auto-redeploy setelah push 1313469; polling /api/bootstrap: attempt pertama menangkap provision mid-flight (0/3/12/1 — race antar instance serverless), attempt kedua konvergen penuh 31/3/12/3.
+- Verifikasi live kinsuroi-dev.vercel.app: /, /products, /company, /journal, detail produk, /admin → semua 200; nama produk tampil di homepage; WhatsApp CTA benar (wa.me/628588244750).
+
+Stage Summary:
+- Produksi LIVE dengan data lengkap & self-provisioning: DB Supabase terisi otomatis pada request pertama.
+- Sisa untuk owner: login CMS (/admin, password = ADMIN_PASSWORD di Vercel) → isi klaim produk (problem/manfaat/harga/cara pakai — sengaja kosong, tidak dikarang), upload foto final produk #7, dan revocation token lama.
