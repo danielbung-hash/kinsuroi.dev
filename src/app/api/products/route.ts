@@ -1,4 +1,5 @@
 import { db } from '@/lib/db'
+import { ensureDatabase } from '@/lib/db-setup'
 import { isAdmin, unauthorized } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
@@ -14,6 +15,7 @@ function slugify(input: string): string {
 
 /** GET /api/products — admin: all; public: published only */
 export async function GET() {
+  await ensureDatabase()
   const admin = await isAdmin()
   const products = await db.product.findMany({
     where: admin ? {} : { status: 'published' },

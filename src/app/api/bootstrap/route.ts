@@ -1,4 +1,5 @@
 import { db } from '@/lib/db'
+import { ensureDatabase } from '@/lib/db-setup'
 import type { BootstrapData } from '@/lib/types'
 
 export const dynamic = 'force-dynamic'
@@ -6,6 +7,7 @@ export const dynamic = 'force-dynamic'
 /** Public bootstrap payload — everything the storefront needs. Excludes admin secrets. */
 export async function GET() {
   try {
+    await ensureDatabase()
     const [settings, categories, products, articles] = await Promise.all([
       db.siteSetting.findMany(),
       db.category.findMany({ orderBy: { order: 'asc' } }),

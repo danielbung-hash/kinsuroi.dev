@@ -134,3 +134,19 @@ Work Log:
 Stage Summary:
 - Build anti-crash terhadap NEXT_PUBLIC_SUPABASE_URL kosong; schema postgresql user dipertahankan.
 - Checklist Vercel: DATABASE_URL (pooled :6543), DIRECT_URL (direct :5432), ADMIN_PASSWORD, ADMIN_SECRET, NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (jangan kosong); seed DB Supabase.
+
+---
+Task ID: 8
+Agent: Super Z (main agent)
+Task: DB Supabase kosong di produksi → auto-provision runtime (schema + seed)
+
+Work Log:
+- Live site ditemukan: https://kinsuroi-dev.vercel.app (200) — /api/bootstrap: 0 settings/categories/products/articles (DB Supabase kosong).
+- src/lib/seed.ts BARU: data seed terpusat (3 kategori, 12 produk, 3 artikel, 31 settings) + seedDatabase(client) idempoten (upsert by slug/key; field klaim owner tidak pernah ditimpa nilai kosong).
+- src/lib/db-setup.ts BARU: ensureDatabase() — probe tabel; jika tidak ada → CREATE TABLE IF NOT EXISTS (4 tabel, DDL = schema.prisma) → seed jika category.count()===0; never-throw, ready-flag + in-flight lock, retry otomatis di request berikutnya.
+- Wire ensureDatabase(): getBootstrapData (semua halaman SSR) + API bootstrap/products/categories/articles/settings (first-load CMS).
+- scripts/seed.ts direfaktor jadi wrapper tipis seedDatabase — CLI tetap jalan (diverifikasi idempoten di sqlite lokal).
+- Verifikasi: tsc (error tersisa pre-existing di examples/skills + 1 mismatch lama tertutup ignoreBuildErrors), bun run build EXIT 0, preview 200 + bootstrap 12/3/3/31.
+
+Stage Summary:
+- Deploy berikutnya self-provisioning: kunjungan pertama membuat tabel + mengisi data di Supabase otomatis. Fallback manual: prisma db push + bun scripts/seed.ts.

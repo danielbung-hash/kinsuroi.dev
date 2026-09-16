@@ -1,8 +1,11 @@
 // KINSUROI — server-side data helpers (Prisma → pages)
 import { db } from '@/lib/db'
+import { ensureDatabase } from '@/lib/db-setup'
 import type { BootstrapData } from '@/lib/types'
 
 export async function getBootstrapData(): Promise<BootstrapData> {
+  // First request on a fresh deployment provisions schema + seed data.
+  await ensureDatabase()
   try {
     const [settings, categories, products, articles] = await Promise.all([
       db.siteSetting.findMany(),

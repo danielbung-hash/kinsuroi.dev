@@ -1,4 +1,5 @@
 import { db } from '@/lib/db'
+import { ensureDatabase } from '@/lib/db-setup'
 import { isAdmin, unauthorized } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
@@ -14,6 +15,7 @@ function slugify(input: string): string {
 
 /** GET /api/categories */
 export async function GET() {
+  await ensureDatabase()
   const categories = await db.category.findMany({ orderBy: { order: 'asc' }, include: { _count: { select: { products: true } } } })
   return Response.json(categories)
 }

@@ -1,4 +1,5 @@
 import { db } from '@/lib/db'
+import { ensureDatabase } from '@/lib/db-setup'
 import { isAdmin, unauthorized } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
@@ -12,6 +13,7 @@ const sanitize = (rows: { key: string; value: string }[]) =>
 
 /** GET /api/settings — admin only, secrets stripped */
 export async function GET() {
+  await ensureDatabase()
   if (!(await isAdmin())) return unauthorized()
   const settings = await db.siteSetting.findMany()
   return Response.json(sanitize(settings))
