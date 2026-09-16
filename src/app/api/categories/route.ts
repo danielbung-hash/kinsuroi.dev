@@ -15,9 +15,17 @@ function slugify(input: string): string {
 
 /** GET /api/categories */
 export async function GET() {
-  await ensureDatabase()
-  const categories = await db.category.findMany({ orderBy: { order: 'asc' }, include: { _count: { select: { products: true } } } })
-  return Response.json(categories)
+  try {
+    await ensureDatabase()
+    const categories = await db.category.findMany({ orderBy: { order: 'asc' }, include: { _count: { select: { products: true } } } })
+    return Response.json(categories)
+  } catch (e) {
+    console.error('category list error', e)
+    return Response.json(
+      { error: 'Gagal memuat kategori', detail: e instanceof Error ? e.message.split('\n')[0] : 'unknown' },
+      { status: 500 },
+    )
+  }
 }
 
 /** POST /api/categories */

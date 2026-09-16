@@ -90,6 +90,74 @@ const DDL: string[] = [
    )`,
 ]
 
+// Column healing — heals databases provisioned by OLDER builds. CREATE TABLE
+// IF NOT EXISTS never touches a table that already exists, so tables created
+// before newer columns were introduced (e.g. "Product" missing "problem",
+// "purchaseUrl", …) must be widened with ADD COLUMN IF NOT EXISTS. Every
+// statement is idempotent; run only against PostgreSQL (SQLite local mirrors
+// are managed by `prisma db push` and lack this syntax).
+const ALTERS: string[] = [
+  // ── Category ──
+  `ALTER TABLE "Category" ADD COLUMN IF NOT EXISTS "description" TEXT`,
+  `ALTER TABLE "Category" ADD COLUMN IF NOT EXISTS "order" INTEGER NOT NULL DEFAULT 0`,
+  `ALTER TABLE "Category" ADD COLUMN IF NOT EXISTS "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP`,
+  `ALTER TABLE "Category" ADD COLUMN IF NOT EXISTS "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP`,
+  // ── Product ──
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "categoryId" TEXT`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "shortDesc" TEXT`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "description" TEXT`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "problem" TEXT`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "price" TEXT`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "benefits" TEXT`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "ingredients" TEXT`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "howToUse" TEXT`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "suitableFor" TEXT`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "image" TEXT`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "gallery" TEXT`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "faq" TEXT`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "status" TEXT NOT NULL DEFAULT 'published'`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "featured" BOOLEAN NOT NULL DEFAULT false`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "order" INTEGER NOT NULL DEFAULT 0`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "purchaseUrl" TEXT`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "marketplaceUrl" TEXT`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "seoTitle" TEXT`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "seoDescription" TEXT`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP`,
+  `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP`,
+  // ── Article ──
+  `ALTER TABLE "Article" ADD COLUMN IF NOT EXISTS "excerpt" TEXT`,
+  `ALTER TABLE "Article" ADD COLUMN IF NOT EXISTS "content" TEXT`,
+  `ALTER TABLE "Article" ADD COLUMN IF NOT EXISTS "thumbnail" TEXT`,
+  `ALTER TABLE "Article" ADD COLUMN IF NOT EXISTS "author" TEXT NOT NULL DEFAULT 'KINSUROI Editorial'`,
+  `ALTER TABLE "Article" ADD COLUMN IF NOT EXISTS "topic" TEXT`,
+  `ALTER TABLE "Article" ADD COLUMN IF NOT EXISTS "publishedAt" TIMESTAMP(3)`,
+  `ALTER TABLE "Article" ADD COLUMN IF NOT EXISTS "seoTitle" TEXT`,
+  `ALTER TABLE "Article" ADD COLUMN IF NOT EXISTS "seoDescription" TEXT`,
+  `ALTER TABLE "Article" ADD COLUMN IF NOT EXISTS "status" TEXT NOT NULL DEFAULT 'draft'`,
+  `ALTER TABLE "Article" ADD COLUMN IF NOT EXISTS "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP`,
+  `ALTER TABLE "Article" ADD COLUMN IF NOT EXISTS "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP`,
+  // ── SiteSetting ──
+  `ALTER TABLE "SiteSetting" ADD COLUMN IF NOT EXISTS "value" TEXT NOT NULL DEFAULT ''`,
+  `ALTER TABLE "SiteSetting" ADD COLUMN IF NOT EXISTS "group" TEXT NOT NULL DEFAULT 'general'`,
+  `ALTER TABLE "SiteSetting" ADD COLUMN IF NOT EXISTS "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP`,
+  // ── Testimonial ──
+  `ALTER TABLE "Testimonial" ADD COLUMN IF NOT EXISTS "image" TEXT`,
+  `ALTER TABLE "Testimonial" ADD COLUMN IF NOT EXISTS "name" TEXT`,
+  `ALTER TABLE "Testimonial" ADD COLUMN IF NOT EXISTS "caption" TEXT`,
+  `ALTER TABLE "Testimonial" ADD COLUMN IF NOT EXISTS "source" TEXT`,
+  `ALTER TABLE "Testimonial" ADD COLUMN IF NOT EXISTS "status" TEXT NOT NULL DEFAULT 'published'`,
+  `ALTER TABLE "Testimonial" ADD COLUMN IF NOT EXISTS "order" INTEGER NOT NULL DEFAULT 0`,
+  `ALTER TABLE "Testimonial" ADD COLUMN IF NOT EXISTS "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP`,
+  `ALTER TABLE "Testimonial" ADD COLUMN IF NOT EXISTS "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP`,
+]
+
+// FK heal — older tables may pre-date the Product → Category constraint.
+const FK_HEAL = `DO $$ BEGIN
+  ALTER TABLE "Product" ADD CONSTRAINT "Product_categoryId_fkey"
+    FOREIGN KEY ("categoryId") REFERENCES "Category"("id")
+    ON DELETE SET NULL ON UPDATE CASCADE;
+EXCEPTION WHEN duplicate_object THEN NULL; END $$`
+
 let ready = false
 let inflight: Promise<void> | null = null
 
@@ -113,12 +181,35 @@ function schemaClient(): { client: PrismaClient; ephemeral: boolean } {
 
 async function provision(): Promise<void> {
   const { client, ephemeral } = schemaClient()
+  // Column/constraint healing is PostgreSQL-only: production always hits
+  // Postgres (DIRECT_URL or a postgres DATABASE_URL); the SQLite local mirror
+  // is managed by `prisma db push` and does not support this syntax.
+  const runtimeUrl = (process.env.DATABASE_URL ?? '').trim().toLowerCase()
+  const isPostgres = ephemeral || runtimeUrl.startsWith('postgres')
   try {
     // DDL is idempotent (CREATE TABLE IF NOT EXISTS) and cheap — always run it
     // so tables added in newer releases (e.g. "Testimonial") are created even
     // on databases that were provisioned by an older version of the site.
     for (const stmt of DDL) {
       await client.$executeRawUnsafe(stmt)
+    }
+
+    // Widen tables provisioned by older builds so every column the current
+    // Prisma client expects exists (fixes "column … does not exist" 500s).
+    // Each statement is independent — one failure never blocks the rest.
+    if (isPostgres) {
+      for (const stmt of ALTERS) {
+        try {
+          await client.$executeRawUnsafe(stmt)
+        } catch (e) {
+          console.warn('kinsuroi: column heal skipped —', e instanceof Error ? e.message.split('\n')[0] : e)
+        }
+      }
+      try {
+        await client.$executeRawUnsafe(FK_HEAL)
+      } catch (e) {
+        console.warn('kinsuroi: FK heal skipped —', e instanceof Error ? e.message.split('\n')[0] : e)
+      }
     }
 
     // Seed only a truly empty catalog — never touch an owner-populated one.

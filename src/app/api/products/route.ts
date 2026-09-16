@@ -15,14 +15,22 @@ function slugify(input: string): string {
 
 /** GET /api/products — admin: all; public: published only */
 export async function GET() {
-  await ensureDatabase()
-  const admin = await isAdmin()
-  const products = await db.product.findMany({
-    where: admin ? {} : { status: 'published' },
-    orderBy: { order: 'asc' },
-    include: { category: true },
-  })
-  return Response.json(products)
+  try {
+    await ensureDatabase()
+    const admin = await isAdmin()
+    const products = await db.product.findMany({
+      where: admin ? {} : { status: 'published' },
+      orderBy: { order: 'asc' },
+      include: { category: true },
+    })
+    return Response.json(products)
+  } catch (e) {
+    console.error('product list error', e)
+    return Response.json(
+      { error: 'Gagal memuat produk', detail: e instanceof Error ? e.message.split('\n')[0] : 'unknown' },
+      { status: 500 },
+    )
+  }
 }
 
 /** POST /api/products — create */

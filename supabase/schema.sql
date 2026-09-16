@@ -1,6 +1,13 @@
 -- ═══════════════════════════════════════════════════════════════════
 -- KINSUROI — Supabase / PostgreSQL production schema
 -- ═══════════════════════════════════════════════════════════════════
+-- ⚠️  REFERENCE ONLY — the Next.js app does NOT read these snake_case
+-- tables. The running app uses Prisma's camelCase tables ("Category",
+-- "Product", "Article", "SiteSetting", "Testimonial") which are created
+-- and auto-healed at runtime by src/lib/db-setup.ts — no manual SQL
+-- needed. Running THIS file is optional (Supabase-Auth+RLS alternative
+-- architecture) and must NOT be mixed with the Prisma-managed tables.
+--
 -- Mirrors prisma/schema.prisma (the SQLite preview database).
 -- Run this in the Supabase SQL editor when migrating to production.
 --

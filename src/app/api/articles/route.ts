@@ -15,13 +15,21 @@ function slugify(input: string): string {
 
 /** GET /api/articles — admin: all; public: published only */
 export async function GET() {
-  await ensureDatabase()
-  const admin = await isAdmin()
-  const articles = await db.article.findMany({
-    where: admin ? {} : { status: 'published' },
-    orderBy: [{ publishedAt: 'desc' }, { createdAt: 'desc' }],
-  })
-  return Response.json(articles)
+  try {
+    await ensureDatabase()
+    const admin = await isAdmin()
+    const articles = await db.article.findMany({
+      where: admin ? {} : { status: 'published' },
+      orderBy: [{ publishedAt: 'desc' }, { createdAt: 'desc' }],
+    })
+    return Response.json(articles)
+  } catch (e) {
+    console.error('article list error', e)
+    return Response.json(
+      { error: 'Gagal memuat artikel', detail: e instanceof Error ? e.message.split('\n')[0] : 'unknown' },
+      { status: 500 },
+    )
+  }
 }
 
 /** POST /api/articles */

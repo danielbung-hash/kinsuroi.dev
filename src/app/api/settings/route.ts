@@ -25,10 +25,18 @@ const sanitize = (rows: { key: string; value: string }[]) =>
 
 /** GET /api/settings — admin only, secrets stripped */
 export async function GET() {
-  await ensureDatabase()
-  if (!(await isAdmin())) return unauthorized()
-  const settings = await db.siteSetting.findMany()
-  return Response.json(sanitize(settings))
+  try {
+    await ensureDatabase()
+    if (!(await isAdmin())) return unauthorized()
+    const settings = await db.siteSetting.findMany()
+    return Response.json(sanitize(settings))
+  } catch (e) {
+    console.error('settings list error', e)
+    return Response.json(
+      { error: 'Gagal memuat settings', detail: e instanceof Error ? e.message.split('\n')[0] : 'unknown' },
+      { status: 500 },
+    )
+  }
 }
 
 /** PUT /api/settings — bulk upsert { key: value, ... }; secret keys rejected */
