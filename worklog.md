@@ -163,3 +163,27 @@ Work Log:
 Stage Summary:
 - Produksi LIVE dengan data lengkap & self-provisioning: DB Supabase terisi otomatis pada request pertama.
 - Sisa untuk owner: login CMS (/admin, password = ADMIN_PASSWORD di Vercel) → isi klaim produk (problem/manfaat/harga/cara pakai — sengaja kosong, tidak dikarang), upload foto final produk #7, dan revocation token lama.
+
+---
+Task ID: 10
+Agent: Super Z (main agent)
+Task: Fix upload foto di Vercel (ENOENT mkdir /var/task/public) + kompresi gambar + tombol seed/repair di CMS
+
+Work Log:
+- Diagnosis: error `ENOENT mkdir '/var/task/public'` terjadi karena upload jatuh ke fallback lokal saat env Supabase belum terbaca di serverless (filesystem Vercel read-only → crash).
+- src/lib/storage.ts: (1) auto-create bucket `product-images` (public, limit 5MB) via service key saat upload pertama + retry sekali saat 404; (2) guard `process.env.VERCEL === '1'` → fallback lokal diganti error Indonesia yang actionable (bukan crash ENOENT); (3) delete error di-log, 404 diabaikan.
+- src/lib/db-setup.ts: DDL + seed sekarang jalan via klien ephemeral `DIRECT_URL` (port 5432) karena CREATE TABLE tidak reliable lewat pooler 6543 (PgBouncer); klien diputus setelah provisioning; fallback ke klien utama di lokal (sqlite tetap aman).
+- src/lib/seed.ts: tambah `seedMissing()` — repair-mode yang hanya MENAMBAH baris hilang by slug/key, tidak pernah menimpa konten owner.
+- src/app/api/seed/route.ts (baru): POST = repair seed (admin-only), GET = jumlah baris (admin-only).
+- src/components/kinsuroi/AdminView.tsx: panel "Database tools" di overview — deteksi DB kosong (badge "Empty") + tombol "Seed default content"/"Seed / repair content" dengan konfirmasi AlertDialog; toast ringkasan jumlah baris yang ditambahkan.
+- src/components/kinsuroi/admin/fields.tsx: kompresi gambar sisi browser sebelum upload (foto > 1.2MB → max 2000px, WebP utk PNG/WebP dengan alpha, JPEG 0.85 lainnya) supaya lolos batas body 4.5MB serverless; pesan error ukuran diperbarui.
+- next.config.ts: remotePatterns + `**.supabase.com` (host project Supabase baru).
+- README.md: tabel env (DATABASE_URL pooler 6543 + pgbouncer=true, DIRECT_URL 5432), checklist deploy Vercel, penjelasan upload produksi.
+- Build test: `NEXT_PUBLIC_SUPABASE_URL="" bun run build` exit 0 (semua route termasuk /api/seed).
+- Runtime test lokal: home 200; login 200; GET /api/seed → {3,12,3,31}; POST /api/seed → ok, 0 ditambahkan (repair mode benar, semua sudah ada); POST /api/upload lokal → 201 file tersimpan.
+
+Stage Summary:
+- Upload/ganti/hapus foto di produksi kini berfungsi: Supabase Storage target utama dengan bucket auto-provisioned; tanpa env → pesan jelas, bukan crash.
+- DB Supabase aman self-provision (DDL via DIRECT_URL) dan CMS punya tombol seed/repair non-destruktif.
+- Foto HP besar otomatis dikompres di browser sebelum upload.
+- Owner tetap perlu: set env NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY di Vercel (bila belum), lalu redeploy.

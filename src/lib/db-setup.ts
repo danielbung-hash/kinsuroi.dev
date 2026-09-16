@@ -13,6 +13,7 @@
 //   • Runs at most once per server instance (ready flag + in-flight lock).
 import { db } from '@/lib/db'
 import { seedDatabase } from '@/lib/seed'
+import { PrismaClient } from '@prisma/client'
 
 // Matches prisma/schema.prisma (PostgreSQL) — the 4 CMS tables only.
 const DDL: string[] = [
@@ -81,10 +82,28 @@ const DDL: string[] = [
 let ready = false
 let inflight: Promise<void> | null = null
 
+/**
+ * Schema-creation client. On serverless hosts DATABASE_URL points at the
+ * transaction-pooler (port 6543, PgBouncer) where DDL is unreliable or
+ * blocked — schema creation and seeding therefore run over DIRECT_URL
+ * (port 5432) when available. Falls back to the main client locally.
+ */
+function schemaClient(): { client: PrismaClient; ephemeral: boolean } {
+  const direct = process.env.DIRECT_URL?.trim()
+  if (direct) {
+    try {
+      return { client: new PrismaClient({ datasourceUrl: direct, log: ['error'] }), ephemeral: true }
+    } catch (e) {
+      console.warn('kinsuroi: DIRECT_URL client could not be created —', e instanceof Error ? e.message : e)
+    }
+  }
+  return { client: db, ephemeral: false }
+}
+
 /** True when the CMS tables already exist and are queryable. */
-async function tablesExist(): Promise<boolean> {
+async function tablesExist(client: PrismaClient): Promise<boolean> {
   try {
-    await db.$queryRawUnsafe('SELECT 1 FROM "Category" LIMIT 1')
+    await client.$queryRawUnsafe('SELECT 1 FROM "Category" LIMIT 1')
     return true
   } catch {
     return false
@@ -92,18 +111,23 @@ async function tablesExist(): Promise<boolean> {
 }
 
 async function provision(): Promise<void> {
-  if (!(await tablesExist())) {
-    for (const stmt of DDL) {
-      await db.$executeRawUnsafe(stmt)
+  const { client, ephemeral } = schemaClient()
+  try {
+    if (!(await tablesExist(client))) {
+      for (const stmt of DDL) {
+        await client.$executeRawUnsafe(stmt)
+      }
+      console.log('kinsuroi: database schema created')
     }
-    console.log('kinsuroi: database schema created')
-  }
 
-  // Seed only a truly empty catalog — never touch an owner-populated one.
-  const count = await db.category.count()
-  if (count === 0) {
-    await seedDatabase(db)
-    console.log('kinsuroi: database seeded (12 products, 3 articles, site settings)')
+    // Seed only a truly empty catalog — never touch an owner-populated one.
+    const count = await client.category.count()
+    if (count === 0) {
+      await seedDatabase(client)
+      console.log('kinsuroi: database seeded (12 products, 3 articles, site settings)')
+    }
+  } finally {
+    if (ephemeral) await client.$disconnect().catch(() => {})
   }
 }
 

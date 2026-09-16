@@ -32,11 +32,12 @@ const nextConfig: NextConfig = {
   reactStrictMode: false,
   images: {
     // Allow Next.js image optimization for Supabase Storage assets
-    // (project host + any *.supabase.co / *.supabase.in storage endpoint)
+    // (project host + any *.supabase.co / *.supabase.in / *.supabase.com endpoint)
     remotePatterns: [
       ...(supabaseHost ? [{ protocol: "https" as const, hostname: supabaseHost }] : []),
       { protocol: "https", hostname: "**.supabase.co" },
       { protocol: "https", hostname: "**.supabase.in" },
+      { protocol: "https", hostname: "**.supabase.com" },
     ],
   },
 };

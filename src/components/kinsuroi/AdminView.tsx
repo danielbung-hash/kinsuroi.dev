@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
-import { Lock, LogOut, Pencil, Plus, RefreshCw, Trash2 } from 'lucide-react'
+import { Database, Lock, LogOut, Pencil, Plus, RefreshCw, Trash2 } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -584,6 +584,76 @@ function SocialContactTab({ settings, onSave }: { settings: SiteSettings; onSave
   )
 }
 
+/* ──────────────────── DATABASE TOOLS ──────────────────── */
+
+function DatabaseTools() {
+  const { products, articles, categories, refresh } = useKinsuroi()
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const empty = products.length === 0 && categories.length === 0 && articles.length === 0
+
+  const seed = async () => {
+    setBusy(true)
+    try {
+      const res = await fetch('/api/seed', { method: 'POST' })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Seed failed')
+      const parts = [
+        data.products ? `${data.products} products` : null,
+        data.categories ? `${data.categories} categories` : null,
+        data.articles ? `${data.articles} stories` : null,
+        data.settings ? `${data.settings} settings` : null,
+      ].filter(Boolean)
+      toast({
+        title: 'Database ready',
+        description: parts.length
+          ? `Added: ${parts.join(', ')}. Existing content was not modified.`
+          : 'All default content already exists — nothing to add.',
+      })
+      refresh()
+    } catch (e) {
+      toast({ title: 'Seed failed', description: e instanceof Error ? e.message : 'Unknown error', variant: 'destructive' })
+    } finally {
+      setBusy(false)
+      setConfirmOpen(false)
+    }
+  }
+
+  return (
+    <div className="bg-white border border-line p-5 mb-10 flex flex-col md:flex-row md:items-center gap-4">
+      <div className="flex-1">
+        <p className="flex items-center gap-2 text-sm text-ink">
+          <Database size={14} /> Database tools
+          {empty && <span className="text-[9px] tracking-[0.2em] uppercase bg-ink text-white px-2 py-0.5">Empty</span>}
+        </p>
+        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+          {empty
+            ? 'The connected database looks empty. Seed the default KINSUROI catalog — 12 products, 3 categories, 3 journal stories, site settings — then edit everything freely in the tabs below.'
+            : 'Adds any missing default rows (products, categories, stories, settings). Your existing content is never overwritten.'}
+        </p>
+      </div>
+      <button onClick={() => setConfirmOpen(true)} disabled={busy} className="btn-outline !py-2.5 !px-5 shrink-0 disabled:opacity-50">
+        <Database size={13} /> {empty ? 'Seed default content' : 'Seed / repair content'}
+      </button>
+
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Seed default content?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Missing default products, categories, journal stories, and site settings will be added to the connected database. Your existing content is never modified or removed.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={seed} className="bg-ink text-white hover:bg-ink/90">{busy ? 'Seeding…' : 'Seed now'}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  )
+}
+
 /* ──────────────────────── ADMIN SHELL ──────────────────────── */
 
 export function AdminView() {
@@ -679,7 +749,7 @@ export function AdminView() {
 
       <div className="mx-auto max-w-6xl px-6 pt-10">
         {/* Overview stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-line border border-line mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-line border border-line mb-6">
           {stats.map((st) => (
             <div key={st.label} className="bg-white px-6 py-5">
               <p className="font-display text-3xl text-ink">{st.value}</p>
@@ -687,6 +757,8 @@ export function AdminView() {
             </div>
           ))}
         </div>
+
+        <DatabaseTools />
 
         <Tabs defaultValue="products">
           <TabsList className="bg-white border border-line h-auto p-1 rounded-none flex-wrap">

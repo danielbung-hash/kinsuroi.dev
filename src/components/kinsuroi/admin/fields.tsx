@@ -150,6 +150,47 @@ export function SwitchField({ label, checked, onChange, hint }: { label: string;
   )
 }
 
+/* ── Client-side image compression ───────────────────────────
+ * Vercel serverless functions reject request bodies over ~4.5 MB, and
+ * phone photos are routinely 3–8 MB. Oversized images are therefore
+ * downscaled (max 2000 px) and re-encoded in the browser before upload:
+ * WebP (alpha preserved) for PNG/WebP sources, JPEG otherwise.
+ * Failures are non-fatal — the original file is used as fallback.
+ */
+const COMPRESS_OVER = 1.2 * 1024 * 1024 // only bother above 1.2 MB
+
+async function compressImage(file: File): Promise<File> {
+  if (!file.type.startsWith('image/') || file.type === 'image/gif') return file
+  if (file.size <= COMPRESS_OVER) return file
+  try {
+    const bitmap = await createImageBitmap(file)
+    const maxSide = 2000
+    const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height))
+    const w = Math.max(1, Math.round(bitmap.width * scale))
+    const h = Math.max(1, Math.round(bitmap.height * scale))
+    const canvas = document.createElement('canvas')
+    canvas.width = w
+    canvas.height = h
+    const ctx = canvas.getContext('2d')
+    if (!ctx) {
+      bitmap.close()
+      return file
+    }
+    ctx.drawImage(bitmap, 0, 0, w, h)
+    bitmap.close()
+
+    const keepAlpha = file.type === 'image/png' || file.type === 'image/webp'
+    const outType = keepAlpha && typeof canvas.toBlob === 'function' ? 'image/webp' : 'image/jpeg'
+    const blob: Blob | null = await new Promise((resolve) => canvas.toBlob(resolve, outType, 0.85))
+    if (!blob || blob.size >= file.size) return file
+    const ext = outType === 'image/webp' ? 'webp' : 'jpg'
+    const name = `${file.name.replace(/\.[^.]+$/, '')}-compressed.${ext}`
+    return new File([blob], name, { type: outType })
+  } catch {
+    return file
+  }
+}
+
 /** Image input with upload button + preview. Returns a public URL (Supabase Storage or /uploads/...). */
 export function ImageField({
   label,
@@ -175,18 +216,20 @@ export function ImageField({
       .catch(() => {})
   }, [])
 
-  const upload = async (file: File) => {
+  const upload = async (raw: File) => {
     // Client-side pre-validation (server validates again — same rules)
-    if (!file.type.startsWith('image/')) {
+    if (!raw.type.startsWith('image/')) {
       toast({ title: 'Upload failed', description: 'Hanya file gambar (JPG, PNG, WebP, AVIF) yang diizinkan.', variant: 'destructive' })
-      return
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      toast({ title: 'Upload failed', description: 'Ukuran file melebihi 5 MB.', variant: 'destructive' })
       return
     }
     setBusy(true)
     try {
+      // Photos above ~1.2 MB are downscaled/re-encoded in the browser first,
+      // so phone photos pass the serverless 4.5 MB body limit comfortably.
+      const file = await compressImage(raw)
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error('Ukuran file tetap melebihi 5 MB setelah kompresi otomatis. Coba gambar yang lebih kecil.')
+      }
       const fd = new FormData()
       fd.append('file', file)
       const res = await fetch('/api/upload', { method: 'POST', body: fd })

@@ -194,3 +194,71 @@ export async function seedDatabase(client: PrismaClient): Promise<void> {
     await client.siteSetting.upsert({ where: { key: s.key }, update: { value: s.value, group: s.group }, create: s })
   }
 }
+
+export type SeedReport = {
+  categories: number
+  products: number
+  articles: number
+  settings: number
+}
+
+/**
+ * Repair-mode seed — adds ONLY rows that are missing (matched by slug/key).
+ * Never overwrites owner-entered CMS content, so it is safe to run anytime
+ * (e.g. from the admin "Seed default content" button on a fresh production
+ * database, or after rows were deleted accidentally).
+ */
+export async function seedMissing(client: PrismaClient): Promise<SeedReport> {
+  const report: SeedReport = { categories: 0, products: 0, articles: 0, settings: 0 }
+
+  for (const c of categories) {
+    const exists = await client.category.findUnique({ where: { slug: c.slug } })
+    if (!exists) {
+      await client.category.create({ data: c })
+      report.categories++
+    }
+  }
+
+  for (const p of products) {
+    const exists = await client.product.findUnique({ where: { slug: p.slug } })
+    if (exists) continue
+    const cat = await client.category.findUnique({ where: { slug: p.category } })
+    await client.product.create({
+      data: {
+        name: p.name,
+        slug: p.slug,
+        categoryId: cat?.id ?? null,
+        shortDesc: p.shortDesc,
+        image: p.image ?? `/images/products/${p.slug}.jpg`,
+        status: 'published',
+        featured: p.featured ?? false,
+        order: p.order,
+        seoTitle: `${p.name} | KINSUROI`,
+      },
+    })
+    report.products++
+  }
+
+  for (const a of articles) {
+    const exists = await client.article.findUnique({ where: { slug: a.slug } })
+    if (exists) continue
+    await client.article.create({
+      data: { ...a, author: 'Redaksi KINSUROI', status: 'published', publishedAt: new Date() },
+    })
+    report.articles++
+  }
+
+  for (const st of settings) {
+    const exists = await client.siteSetting.findUnique({ where: { key: st.key } })
+    if (!exists) {
+      await client.siteSetting.create({ data: st })
+      report.settings++
+    }
+  }
+
+  // Same housekeeping as the full seed
+  await client.category.deleteMany({ where: { slug: 'serum' } })
+  await client.siteSetting.deleteMany({ where: { key: 'admin_password' } })
+
+  return report
+}
