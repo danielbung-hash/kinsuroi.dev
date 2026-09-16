@@ -208,3 +208,23 @@ Stage Summary:
 - Halaman Tentang kini = Company Profile resmi (dari PDF), CMS Company tab mengikuti struktur PDF, foto founder/fasilitas otomatis terpasang.
 - Testimoni foto bisa dikelola penuh via CMS (upload/ganti/hapus/urutan/draft) dan tampil elegan di beranda.
 - Owner perlu: klik "Seed / repair content" di /admin (mengisi konten PDF ke DB produksi), lalu upload foto testimoni via tab Testimoni.
+
+---
+Task ID: 12
+Agent: Super Z (main agent)
+Task: Isi data Company dari PDF resmi (email/alamat/Instagram/paragraf Lab & Produksi/klaim portofolio produk) + perbaikan DDL agar tabel baru terbentuk di DB produksi lama
+
+Work Log:
+- Perbaikan db-setup.ts: DDL idempoten (CREATE TABLE IF NOT EXISTS) kini SELALU dijalankan pada provisioning — sebelumnya hanya jalan bila tabel Category tidak ada, sehingga tabel "Testimonial" TIDAK AKAN PERNAH terbentuk di DB produksi yang sudah terisi (tab CMS akan error). tablesExist() yang tak terpakai dihapus.
+- seed.ts disesuaikan dengan PDF resmi: contact_email = danieramardika@gmail.com (kosong → diisi repair), contact_address = teks persis PDF ("Komplek Sentra Niaga Surya Kadu Blok F.9 ... Kabupaten Tangerang, Banten 15810"), social_instagram = https://www.instagram.com/kinsuroi, setting BARU company_lab (paragraf "Setiap formula dikembangkan, diuji, disempurnakan..." dari halaman 03 PDF).
+- productClaims: 7 klaim manfaat resmi dari section PRODUCT PORTFOLIO PDF (Soft Cleanser Gel, L-Active C+, Retinol Serum+, Lip Balm, Shower Öl, Body Öl, Body Lotion Retinol) → diisi HANYA ke produk yang field benefits-nya masih kosong (fillEmptyClaims dipanggil di seedDatabase & seedMissing; klaim isi owner tidak pernah ditimpa).
+- refreshLegacyAddress: alamat kontak lama hasil seed otomatis (versi singkat "Kota Tangerang...") diperbarui ke versi PDF HANYA bila masih byte-equal dengan seed lama (bukti belum diedit owner).
+- AboutView.tsx: section 03 kini merender paragraf "Lab & Produksi" di antara narasi utama dan Bahan Baku Encapsulation. AdminView Company tab: field "Lab & Produksi" ditambahkan.
+- scripts/verify-seed.ts (baru): CLI verifikasi cepat isi settings/benefits + uji repair-mode.
+- Testimonial uji ("Sarah M." dari sesi sebelumnya) dihapus dari DB lokal agar CMS owner mulai bersih.
+- Verifikasi (Agent Browser): /about merender semua section PDF (01 Siapa Kami + foto founder, 02 Pabrik + 2 kartu + kutipan, 03 Produksi + Lab & Produksi + Encapsulation + Ekstrak Alami, 04 Brand + Kintsukuroi, Visi, Nilai, Company Information dengan email baru) desktop 1280 + mobile 390; beranda menyembunyikan "KATA MEREKA" saat kosong; CMS Testimoni: buat (201) → tampil di beranda → hapus OK tanpa error konsol; kartu produk kini menampilkan klaim PDF; lint clean; build exit 0; repair-mode lokal melaporkan 0 baris baru (idempoten benar).
+- Commit 7dec341 dibuat lokal. PUSH BELUM BISA: remote tanpa kredensial (token lama sengaja dihapus dari URL) — butuh PAT baru dari owner.
+
+Stage Summary:
+- Seluruh data Company Profile kini bersumber dari PDF resmi dan tetap bisa diedit via CMS (tab Company, Social & Contact, dan editor produk).
+- Owner: (1) kirim PAT baru (Contents: Read and write) agar commit 7dec341 bisa di-push → Vercel auto-redeploy membaca SUPABASE_SERVICE_ROLE_KEY yang baru ditambahkan; (2) setelah deploy, buka /admin → klik "SEED / REPAIR CONTENT" sekali untuk mengisi konten PDF + klaim produk + tabel Testimonial ke DB produksi; (3) upload foto testimoni via tab Testimoni.
