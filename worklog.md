@@ -284,3 +284,18 @@ Stage Summary:
 - FIXED & LIVE: products catalog, product detail pages, seed/repair, CMS auth, Testimonial table
 - REMAINING (user action): replace SUPABASE_SERVICE_ROLE_KEY value in Vercel with the full service_role JWT from Supabase Dashboard -> Settings -> API, then Redeploy; uploads (bucket auto-create) will then work
 - Verified working admin password: DBLiugma882207* (matches local .env now)
+
+---
+Task ID: 15
+Agent: main (Super Z)
+Task: Investigate & fix slow production website
+
+Work Log:
+- Measured production: /api/products cold 29.4s (!), warm 1.3-2.0s, homepage 3.3-3.6s total
+- Root causes: (1) Vercel function region iad1 (US) vs Supabase ap-southeast-1 (SG) -> ~200ms RTT per query; (2) cold start ran 50+ DDL/ALTER round-trips over that link; (3) Prisma log:['query'] in production
+- Fixes pushed 8b814c8: vercel.json regions:["sin1"]; db-setup.ts sentinel fast-path (single SCHEMA_UP_TO_DATE_SQL query skips DDL/ALTERs when schema current, full heal still runs on drift); db.ts log:['error'] only
+- Post-deploy measurements: products cold 0.37s, warm 0.34s; testimonials 0.10s; homepage 1.1s; x-vercel-id confirms hkg1::sin1
+
+Stage Summary:
+- Website 6-79x faster; region co-located with DB via vercel.json (no dashboard change needed)
+- Still pending user action: replace SUPABASE_SERVICE_ROLE_KEY in Vercel with verified-correct service JWT (tested working against storage API directly), then Redeploy; final E2E upload test after that
