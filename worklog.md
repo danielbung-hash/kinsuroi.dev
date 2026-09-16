@@ -89,3 +89,17 @@ Stage Summary:
 - Repo lokal SIAP PUSH: 1 commit bersih tanpa secret, 159 file, CMS jalan (login 200).
 - Setelah token valid diterima: git push --force origin main (menimpa snapshot lama yang bocor).
 - Rekomendasi keamanan ke owner: ganti ADMIN_PASSWORD di .env deployment (password lama sudah pernah muncul di chat & repo publik), revoke PAT lama, pertimbangkan recreate repo agar histori lama yang bocor hilang total.
+
+---
+Task ID: 5
+Agent: Super Z (main agent)
+Task: Push ulang dengan token baru user
+
+Work Log:
+- Token baru (fine-grained PAT, 93 char) divalidasi: login danielbung-hash, repo kinsuroi.dev (public), permissions push:true.
+- git push --force origin main BERHASIL: 3f5ae50 → 29eedef (forced update). Remote HEAD = 29eedef30 = local main (2 commit bersih, 159 file, tanpa secret).
+- Snapshot lama yang membocorkan password admin tertimpa dari branch utama.
+
+Stage Summary:
+- github.com/danielbung-hash/kinsuroi.dev kini berisi versi bersih final project KINSUROI.
+- Sisa tindakan owner: revoke kedua token lama yang pernah dikirim di chat, ganti ADMIN_PASSWORD di .env deployment, (opsional) purge histori lama via GitHub Support / recreate repo agar commit bocor tidak reachable by SHA.
