@@ -228,3 +228,4 @@ Work Log:
 Stage Summary:
 - Seluruh data Company Profile kini bersumber dari PDF resmi dan tetap bisa diedit via CMS (tab Company, Social & Contact, dan editor produk).
 - Owner: (1) kirim PAT baru (Contents: Read and write) agar commit 7dec341 bisa di-push → Vercel auto-redeploy membaca SUPABASE_SERVICE_ROLE_KEY yang baru ditambahkan; (2) setelah deploy, buka /admin → klik "SEED / REPAIR CONTENT" sekali untuk mengisi konten PDF + klaim produk + tabel Testimonial ke DB produksi; (3) upload foto testimoni via tab Testimoni.
+- Tindak lanjut konfirmasi owner: schema.prisma (postgresql + directUrl) dipastikan benar untuk Supabase; schema.local.prisma (mirror sqlite khusus sandbox preview) dikeluarkan dari git (git rm --cached + .gitignore, commit 48c42eb) agar repo hanya berisi schema PostgreSQL. Model Testimonial terverifikasi ada di kedua file; produksi tetap membaca schema.prisma via prisma generate.
