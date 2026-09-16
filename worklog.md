@@ -119,3 +119,18 @@ Work Log:
 Stage Summary:
 - Build tahan terhadap env Supabase hilang/kosong/salah; deploy Vercel bisa di-retry.
 - Catatan owner: isi NEXT_PUBLIC_SUPABASE_URL (https://<ref>.supabase.co) + SUPABASE_SERVICE_ROLE_KEY di Vercel jika ingin Storage aktif — tanpa itu upload CMS jatuh ke disk lokal yang ephemeral di Vercel.
+
+---
+Task ID: 7
+Agent: Super Z (main agent)
+Task: Fix build Vercel (lanjutan) + integrasi perubahan schema user (sqlite→postgresql)
+
+Work Log:
+- User mengubah prisma/schema.prisma di GitHub: provider sqlite→postgresql + directUrl=env("DIRECT_URL") (persiapan Supabase).
+- Rebase fix build (6141033) di atas commit user (e24235a) — tanpa konflik — lalu push fast-forward.
+- Bootstrap API terverifikasi TIDAK auto-seed → DB Supabase kosong = situs kosong; owner harus seed (scripts/seed.ts) atau jalankan supabase/schema.sql sebelum/vimala setelah deploy.
+- Catatan lokal: prisma client di sandbox tetap sqlite-generated; JANGAN jalankan prisma generate lokal sebelum ada Postgres yang bisa dihubungi (akan memutus preview). Untuk Vercel: build command disarankan "prisma generate && bun run build".
+
+Stage Summary:
+- Build anti-crash terhadap NEXT_PUBLIC_SUPABASE_URL kosong; schema postgresql user dipertahankan.
+- Checklist Vercel: DATABASE_URL (pooled :6543), DIRECT_URL (direct :5432), ADMIN_PASSWORD, ADMIN_SECRET, NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY (jangan kosong); seed DB Supabase.
