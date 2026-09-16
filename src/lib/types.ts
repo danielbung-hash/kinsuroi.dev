@@ -51,11 +51,22 @@ export type Article = {
 
 export type SiteSettings = Record<string, string>
 
+export type Testimonial = {
+  id: string
+  image: string
+  name?: string | null
+  caption?: string | null
+  source?: string | null
+  status: string // "draft" | "published"
+  order: number
+}
+
 export type BootstrapData = {
   settings: SiteSettings
   categories: Category[]
   products: Product[]
   articles: Article[]
+  testimonials?: Testimonial[]
 }
 
 export type FaqItem = { question: string; answer: string }

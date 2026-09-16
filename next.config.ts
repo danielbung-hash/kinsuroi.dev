@@ -30,6 +30,10 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  // /company was merged into the single Company Profile page (/about)
+  async redirects() {
+    return [{ source: "/company", destination: "/about", permanent: true }];
+  },
   images: {
     // Allow Next.js image optimization for Supabase Storage assets
     // (project host + any *.supabase.co / *.supabase.in / *.supabase.com endpoint)

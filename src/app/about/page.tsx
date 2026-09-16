@@ -6,9 +6,9 @@ import { getBootstrapData } from '@/lib/data'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Tentang KINSUROI',
+  title: 'Tentang KINSUROI — Company Profile',
   description:
-    'KINSUROI adalah brand kecantikan dengan satu ide sederhana: merawat diri harus terasa mudah, elegan, dan jujur. Bersih. Tenang. Elegan. Terpercaya.',
+    'Profil PT Dani Era Mardika, manufaktur skincare kosmetik standar Jerman di balik KINSUROI — formulasi & produksi in-house bersertifikat CPKB (GMP) dan Halal.',
   alternates: { canonical: '/about' },
 }
 

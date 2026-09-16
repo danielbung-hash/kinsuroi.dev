@@ -7,7 +7,7 @@ export async function getBootstrapData(): Promise<BootstrapData> {
   // First request on a fresh deployment provisions schema + seed data.
   await ensureDatabase()
   try {
-    const [settings, categories, products, articles] = await Promise.all([
+    const [settings, categories, products, articles, testimonials] = await Promise.all([
       db.siteSetting.findMany(),
       db.category.findMany({ orderBy: { order: 'asc' } }),
       db.product.findMany({
@@ -19,6 +19,10 @@ export async function getBootstrapData(): Promise<BootstrapData> {
         where: { status: 'published' },
         orderBy: [{ publishedAt: 'desc' }, { createdAt: 'desc' }],
       }),
+      // Optional table — older deployments without it keep rendering
+      db.testimonial
+        .findMany({ where: { status: 'published' }, orderBy: [{ order: 'asc' }, { createdAt: 'desc' }] })
+        .catch(() => []),
     ])
 
     return {
@@ -28,9 +32,10 @@ export async function getBootstrapData(): Promise<BootstrapData> {
       categories,
       products,
       articles,
+      testimonials,
     }
   } catch (e) {
     console.error('kinsuroi: failed to load bootstrap data', e)
-    return { settings: {}, categories: [], products: [], articles: [] }
+    return { settings: {}, categories: [], products: [], articles: [], testimonials: [] }
   }
 }

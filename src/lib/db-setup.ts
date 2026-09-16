@@ -77,6 +77,17 @@ const DDL: string[] = [
      "group" TEXT NOT NULL DEFAULT 'general',
      "updatedAt" TIMESTAMP(3) NOT NULL
    )`,
+  `CREATE TABLE IF NOT EXISTS "Testimonial" (
+     "id" TEXT PRIMARY KEY,
+     "image" TEXT NOT NULL,
+     "name" TEXT,
+     "caption" TEXT,
+     "source" TEXT,
+     "status" TEXT NOT NULL DEFAULT 'published',
+     "order" INTEGER NOT NULL DEFAULT 0,
+     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+     "updatedAt" TIMESTAMP(3) NOT NULL
+   )`,
 ]
 
 let ready = false

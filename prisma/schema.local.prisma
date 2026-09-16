@@ -1,0 +1,101 @@
+// KINSUROI — LOCAL sandbox schema (SQLite mirror of schema.prisma).
+// Used only for the offline preview: `prisma generate --schema prisma/schema.local.prisma`.
+// Production/Vercel always builds from prisma/schema.prisma (PostgreSQL).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Product categories (Face Care, Serum, Lip Care, Body Care, ...) ───
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+}
+
+// ─── Products ───
+model Product {
+  id             String    @id @default(cuid())
+  name           String
+  slug           String    @unique
+  categoryId     String?
+  category       Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  shortDesc      String?
+  description    String?
+  // Sales copy — shown on card & detail (Problem → Solve order)
+  problem        String?
+  price          String? // formatted label, e.g. "Rp 149.000"
+  // Long-form fields — stored as plain text (lists are newline-separated)
+  benefits       String?
+  ingredients    String?
+  howToUse       String?
+  suitableFor    String?
+  // Media
+  image          String?
+  gallery        String? // JSON array of image URLs
+  // Structured FAQ — JSON array of { question, answer }
+  faq            String?
+  // Publishing
+  status         String    @default("published") // "draft" | "published"
+  featured       Boolean   @default(false)
+  order          Int       @default(0)
+  // Commerce — editable via CMS, never hardcoded.
+  // purchaseUrl: direct checkout link; when empty the BUY CTA falls back to
+  // WhatsApp (contact_whatsapp setting) with a prefilled product message.
+  purchaseUrl    String?
+  marketplaceUrl String?
+  // SEO
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// ─── Journal articles ───
+model Article {
+  id             String    @id @default(cuid())
+  title          String
+  slug           String    @unique
+  excerpt        String?
+  content        String?
+  thumbnail      String?
+  author         String    @default("KINSUROI Editorial")
+  topic          String? // e.g. Routine, Tips, Education, Lifestyle
+  publishedAt    DateTime?
+  seoTitle       String?
+  seoDescription String?
+  status         String    @default("draft") // "draft" | "published"
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// ─── Website content / social links / contact / admin — key-value CMS ───
+model SiteSetting {
+  key       String   @id
+  value     String
+  group     String   @default("general") // "hero" | "brand" | "cta" | "footer" | "contact" | "social" | "company" | "admin"
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Homepage testimonials — photo cards managed via the CMS ───
+model Testimonial {
+  id        String   @id @default(cuid())
+  image     String // photo URL (Supabase Storage or local)
+  name      String? // customer name (optional)
+  caption   String? // short quote / review text (optional)
+  source    String? // e.g. "WhatsApp", "Instagram" (optional)
+  status    String   @default("published") // "draft" | "published"
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

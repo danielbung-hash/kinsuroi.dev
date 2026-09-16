@@ -10,26 +10,28 @@
 
 import { createContext, useContext } from 'react'
 import { create } from 'zustand'
-import type { BootstrapData, Category, Product, Article, SiteSettings } from '@/lib/types'
+import type { BootstrapData, Category, Product, Article, Testimonial, SiteSettings } from '@/lib/types'
 
 type KinsuroiState = {
   settings: SiteSettings
   categories: Category[]
   products: Product[]
   articles: Article[]
+  testimonials: Testimonial[]
   loaded: boolean
   hydrate: (d: BootstrapData) => void
   refresh: () => Promise<void>
   setSettings: (s: SiteSettings) => void
 }
 
-const empty: BootstrapData = { settings: {}, categories: [], products: [], articles: [] }
+const empty: BootstrapData = { settings: {}, categories: [], products: [], articles: [], testimonials: [] }
 
 export const useKinsuroi = create<KinsuroiState>((set) => ({
   settings: empty.settings,
   categories: empty.categories,
   products: empty.products,
   articles: empty.articles,
+  testimonials: empty.testimonials,
   loaded: false,
   hydrate: (d) =>
     set((prev) =>
@@ -40,6 +42,7 @@ export const useKinsuroi = create<KinsuroiState>((set) => ({
             categories: d.categories ?? [],
             products: d.products ?? [],
             articles: d.articles ?? [],
+            testimonials: d.testimonials ?? [],
           },
     ),
   refresh: async () => {
@@ -52,6 +55,7 @@ export const useKinsuroi = create<KinsuroiState>((set) => ({
         categories: data.categories ?? [],
         products: data.products ?? [],
         articles: data.articles ?? [],
+        testimonials: data.testimonials ?? [],
         loaded: true,
       })
     } catch {
@@ -75,6 +79,7 @@ export function useK<T>(selector: (s: KinsuroiState) => T): T {
         categories: ctx.categories ?? [],
         products: ctx.products ?? [],
         articles: ctx.articles ?? [],
+        testimonials: ctx.testimonials ?? [],
         loaded: true,
       } as KinsuroiState)
     : state

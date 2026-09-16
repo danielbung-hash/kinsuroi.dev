@@ -8,8 +8,7 @@ import { Wordmark } from './Navbar'
 const EXPLORE = [
   { label: 'Beranda', to: '/' },
   { label: 'Produk', to: '/products' },
-  { label: 'Tentang', to: '/about' },
-  { label: 'Company', to: '/company' },
+  { label: 'Tentang Kami', to: '/about' },
   { label: 'Journal', to: '/journal' },
   { label: 'Kontak', to: '/contact' },
 ]

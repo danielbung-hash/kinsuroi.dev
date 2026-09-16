@@ -202,3 +202,24 @@ on conflict (key) do nothing;
 
 -- ─── Add the first admin after creating an auth user: ───
 -- insert into public.admins (user_id) values ('<auth.users.id>');
+
+-- ═════════════════════════ TESTIMONIALS (Prisma-managed) ═════════════════════════
+-- The app auto-provisions this table on first request (src/lib/db-setup.ts).
+-- Columns follow Prisma's camelCase convention; created here only as reference.
+
+create table if not exists "Testimonial" (
+  "id" text primary key,
+  "image" text not null,
+  "name" text,
+  "caption" text,
+  "source" text,
+  "status" text not null default 'published',
+  "order" integer not null default 0,
+  "createdAt" timestamp(3) not null default current_timestamp,
+  "updatedAt" timestamp(3) not null default current_timestamp
+);
+
+alter table "Testimonial" enable row level security;
+drop policy if exists "public read published testimonials" on "Testimonial";
+create policy "public read published testimonials" on "Testimonial"
+  for select to anon, authenticated using (status = 'published');

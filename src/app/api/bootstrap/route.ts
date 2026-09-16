@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic'
 export async function GET() {
   try {
     await ensureDatabase()
-    const [settings, categories, products, articles] = await Promise.all([
+    const [settings, categories, products, articles, testimonials] = await Promise.all([
       db.siteSetting.findMany(),
       db.category.findMany({ orderBy: { order: 'asc' } }),
       db.product.findMany({
@@ -20,6 +20,10 @@ export async function GET() {
         where: { status: 'published' },
         orderBy: [{ publishedAt: 'desc' }, { createdAt: 'desc' }],
       }),
+      // Optional table — deployments provisioned before it keep working
+      db.testimonial
+        .findMany({ where: { status: 'published' }, orderBy: [{ order: 'asc' }, { createdAt: 'desc' }] })
+        .catch(() => []),
     ])
 
     const payload: BootstrapData & { settings: Record<string, string> } = {
@@ -27,11 +31,12 @@ export async function GET() {
       categories,
       products,
       articles,
+      testimonials,
     }
 
     return Response.json(payload, { headers: { 'Cache-Control': 'no-store' } })
   } catch (e) {
     console.error('bootstrap error', e)
-    return Response.json({ settings: {}, categories: [], products: [], articles: [] }, { status: 200 })
+    return Response.json({ settings: {}, categories: [], products: [], articles: [], testimonials: [] }, { status: 200 })
   }
 }

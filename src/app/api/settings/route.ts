@@ -8,6 +8,18 @@ export const dynamic = 'force-dynamic'
 // credential also no longer exists in the DB at all — env-only auth).
 const SECRET_KEYS = new Set(['admin_password', 'admin_secret'])
 
+/** Group inferred from the key prefix (used only when creating a new row). */
+const groupFor = (key: string): string => {
+  if (key.startsWith('company_')) return 'company'
+  if (key.startsWith('hero_')) return 'hero'
+  if (key.startsWith('brand_')) return 'brand'
+  if (key.startsWith('cta_')) return 'cta'
+  if (key.startsWith('footer_')) return 'footer'
+  if (key.startsWith('contact_')) return 'contact'
+  if (key.startsWith('social_')) return 'social'
+  return 'general'
+}
+
 const sanitize = (rows: { key: string; value: string }[]) =>
   Object.fromEntries(rows.filter((s) => !SECRET_KEYS.has(s.key)).map((s) => [s.key, s.value]))
 
@@ -29,7 +41,7 @@ export async function PUT(req: Request) {
       await db.siteSetting.upsert({
         where: { key },
         update: { value: String(value ?? '') },
-        create: { key, value: String(value ?? ''), group: 'general' },
+        create: { key, value: String(value ?? ''), group: groupFor(key) },
       })
     }
     const settings = await db.siteSetting.findMany()

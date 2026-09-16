@@ -83,6 +83,19 @@ model Article {
 model SiteSetting {
   key       String   @id
   value     String
-  group     String   @default("general") // "hero" | "brand" | "cta" | "footer" | "contact" | "social" | "admin"
+  group     String   @default("general") // "hero" | "brand" | "cta" | "footer" | "contact" | "social" | "company" | "admin"
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Homepage testimonials — photo cards managed via the CMS ───
+model Testimonial {
+  id        String   @id @default(cuid())
+  image     String // photo URL (Supabase Storage or local)
+  name      String? // customer name (optional)
+  caption   String? // short quote / review text (optional)
+  source    String? // e.g. "WhatsApp", "Instagram" (optional)
+  status    String   @default("published") // "draft" | "published"
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

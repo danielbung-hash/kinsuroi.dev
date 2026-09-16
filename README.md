@@ -8,9 +8,10 @@ Dibangun dengan **Next.js 16 + TypeScript + Tailwind CSS 4 + shadcn/ui + Framer 
 
 - **Katalog produk** — 12 produk dalam 3 kategori: Face Care, Lip Care, Body Care
 - **Halaman detail produk** — problem, manfaat, harga, CTA WhatsApp ("Beli Sekarang"), accordion Cara Pakai / Ingredient Highlight / Deskripsi Lengkap (mobile-friendly)
-- **Company page** (`/company`) — About, Vision & Mission, Our Values, Quality & Commitment, Company Information
+- **Halaman Tentang / Company Profile** (`/about`) — satu halaman mengikuti template PDF resmi: Siapa Kami, Kenapa Pabrik Sendiri, Formulasi & Produksi In-House, Brand KINSUROI + filosofi Kintsukuroi, Company Information (`/company` redirect permanen ke `/about`)
 - **Journal** — artikel edukasi dengan halaman artikel terpisah
-- **Admin CMS** (`/admin`) — login berbasis env, kelola produk (CRUD + upload gambar + urutan), kategori, artikel, konten website, sosial media; character counter dengan peringatan soft-limit (tidak memblokir simpan)
+- **Admin CMS** (`/admin`) — login berbasis env, kelola produk (CRUD + upload gambar + urutan), kategori, artikel, **testimoni foto beranda**, konten website, company profile, sosial media; character counter dengan peringatan soft-limit (tidak memblokir simpan)
+- **Testimoni beranda** — galeri foto testimoni pelanggan (upload via CMS, urutan + status draft/published)
 - **Upload gambar** — Supabase Storage (bucket `product-images`) dengan fallback lokal `public/uploads`
 - **SEO** — metadata dinamis per produk/artikel, canonical, Open Graph, `sitemap.xml`, `robots.txt`, JSON-LD
 

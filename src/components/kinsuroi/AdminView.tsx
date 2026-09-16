@@ -12,10 +12,11 @@ import {
 import { toast } from '@/hooks/use-toast'
 import { useKinsuroi } from './store'
 import { Wordmark, LogoImage } from './Navbar'
-import { TextField, AreaField } from './admin/fields'
+import { TextField, AreaField, ImageField } from './admin/fields'
 import { ProductEditor } from './admin/ProductEditor'
 import { ArticleEditor } from './admin/ArticleEditor'
-import type { Article, Category, Product, SiteSettings } from '@/lib/types'
+import { TestimonialEditor } from './admin/TestimonialEditor'
+import type { Article, Category, Product, SiteSettings, Testimonial } from '@/lib/types'
 
 /* ─────────────────────────── LOGIN ─────────────────────────── */
 
@@ -466,25 +467,175 @@ function WebsiteTab({ settings, onSave }: { settings: SiteSettings; onSave: (pat
   )
 }
 
+/* ─────────────── TESTIMONI TAB ─────────────── */
+
+function TestimonialsTab() {
+  const { testimonials, refresh } = useKinsuroi()
+  const [editorOpen, setEditorOpen] = useState(false)
+  const [editing, setEditing] = useState<Testimonial | null>(null)
+  const [deleting, setDeleting] = useState<Testimonial | null>(null)
+
+  const remove = async () => {
+    if (!deleting) return
+    try {
+      const res = await fetch(`/api/testimonials/${deleting.id}`, { method: 'DELETE' })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data.error || 'Delete failed')
+      toast({ title: 'Testimoni dihapus' })
+      refresh()
+    } catch (e) {
+      toast({ title: 'Error', description: e instanceof Error ? e.message : '', variant: 'destructive' })
+    } finally {
+      setDeleting(null)
+    }
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="font-display text-2xl">Testimoni <span className="text-muted-foreground text-base">({testimonials.length})</span></h2>
+          <p className="text-xs text-muted-foreground mt-1">Foto testimoni yang tampil di beranda. Unggah screenshot review/chat atau foto pelanggan.</p>
+        </div>
+        <button onClick={() => { setEditing(null); setEditorOpen(true) }} className="btn-primary !py-2.5 !px-5">
+          <Plus size={14} /> Testimoni baru
+        </button>
+      </div>
+
+      {testimonials.length === 0 ? (
+        <div className="border border-line bg-white px-6 py-12 text-center">
+          <p className="text-muted-foreground">Belum ada testimoni. Klik “Testimoni baru” untuk mengunggah foto pertama.</p>
+        </div>
+      ) : (
+        <div className="border border-line bg-white overflow-x-auto">
+          <table className="w-full text-sm min-w-[640px]">
+            <thead>
+              <tr className="border-b border-line text-left text-[10px] tracking-[0.2em] uppercase text-muted-foreground">
+                <th className="px-4 py-3 font-medium">Foto</th>
+                <th className="px-4 py-3 font-medium">Nama / Kutipan</th>
+                <th className="px-4 py-3 font-medium">Sumber</th>
+                <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-4 py-3 font-medium">Order</th>
+                <th className="px-4 py-3 font-medium text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {testimonials.map((t) => (
+                <tr key={t.id} className="border-b border-line last:border-0 hover:bg-cream/60 transition-colors">
+                  <td className="px-4 py-3">
+                    <div className="relative w-10 h-12 bg-sand shrink-0 overflow-hidden">
+                      {t.image && <Image src={t.image} alt="" fill sizes="40px" className="object-cover" />}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3">
+                    <p className="text-ink">{t.name || '—'}</p>
+                    {t.caption && <p className="text-xs text-muted-foreground line-clamp-1 max-w-xs">{t.caption}</p>}
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground">{t.source || '—'}</td>
+                  <td className="px-4 py-3">
+                    <Badge variant={t.status === 'published' ? 'default' : 'secondary'} className={t.status === 'published' ? 'bg-ink text-white' : ''}>
+                      {t.status}
+                    </Badge>
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground">{t.order}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex justify-end gap-2">
+                      <button onClick={() => { setEditing(t); setEditorOpen(true) }} className="p-2 hover:bg-sand transition-colors" aria-label={`Edit testimoni ${t.name ?? ''}`}>
+                        <Pencil size={14} />
+                      </button>
+                      <button onClick={() => setDeleting(t)} className="p-2 hover:bg-sand text-muted-foreground hover:text-destructive transition-colors" aria-label={`Hapus testimoni ${t.name ?? ''}`}>
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      <TestimonialEditor open={editorOpen} onOpenChange={setEditorOpen} testimonial={editing} onSaved={refresh} />
+
+      <AlertDialog open={!!deleting} onOpenChange={(v) => !v && setDeleting(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Hapus testimoni?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Foto testimoni {deleting?.name ? `dari ${deleting.name}` : 'ini'} akan dihapus permanen dari beranda dan storage.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={remove} className="bg-destructive text-white hover:bg-destructive/90">Hapus</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  )
+}
+
 /* ─────────────── COMPANY CONTENT TAB ─────────────── */
 
-const COMPANY_FIELDS: { key: string; label: string; area?: boolean; hint?: string }[] = [
-  { key: 'company_about', label: 'About the Company — profil singkat', area: true, hint: 'Blank line = new paragraph' },
-  { key: 'company_vision', label: 'Vision', area: true },
-  { key: 'company_mission', label: 'Mission', area: true },
-  { key: 'company_values', label: 'Our Values — nilai/komitmen perusahaan', area: true, hint: 'Blank line = new paragraph' },
-  { key: 'company_quality', label: 'Quality & Commitment', area: true, hint: 'Blank line = new paragraph' },
+type CompanyField = { key: string; label: string; area?: boolean; hint?: string; image?: boolean }
+
+const COMPANY_SECTIONS: { title: string; fields: CompanyField[] }[] = [
+  {
+    title: '01 · Siapa Kami',
+    fields: [
+      { key: 'company_about', label: 'Tentang perusahaan', area: true, hint: 'Baris kosong = paragraf baru' },
+      { key: 'company_founder_image', label: 'Foto founder', image: true },
+      { key: 'company_founder', label: 'Keterangan foto founder', hint: 'mis. Nama — jabatan' },
+      { key: 'company_facts', label: 'Fakta singkat', area: true, hint: 'Satu per baris, format “Label: Isi” (Badan Hukum, Fasilitas, dst.)' },
+    ],
+  },
+  {
+    title: '02 · Kenapa Kami Membangun Pabrik Sendiri',
+    fields: [
+      { key: 'company_factory_image', label: 'Foto fasilitas', image: true },
+      { key: 'company_factory', label: 'Narasi utama', area: true, hint: 'Baris kosong = paragraf baru' },
+      { key: 'company_quality', label: 'Kartu — Kontrol Kualitas', area: true },
+      { key: 'company_responsibility', label: 'Kartu — Tanggung Jawab Penuh', area: true },
+      { key: 'company_quote', label: 'Kutipan besar', area: true, hint: 'Ditampilkan menonjol di antara section' },
+    ],
+  },
+  {
+    title: '03 · Formulasi & Produksi In-House',
+    fields: [
+      { key: 'company_lab_image', label: 'Foto formulasi', image: true },
+      { key: 'company_production', label: 'Narasi utama', area: true },
+      { key: 'company_encapsulation', label: 'Bahan Baku Encapsulation', area: true },
+      { key: 'company_natural', label: 'Ekstrak Alami Indonesia', area: true },
+    ],
+  },
+  {
+    title: '04 · Brand KINSUROI',
+    fields: [
+      { key: 'company_brand_story', label: 'Cerita brand', area: true },
+      { key: 'company_kintsukuroi', label: 'Filosofi Kintsukuroi', area: true },
+    ],
+  },
+  {
+    title: '05 · Section Opsional (kosong = disembunyikan)',
+    fields: [
+      { key: 'company_vision', label: 'Visi', area: true },
+      { key: 'company_mission', label: 'Misi', area: true },
+      { key: 'company_values', label: 'Nilai Kami', area: true },
+    ],
+  },
 ]
+
+const COMPANY_ALL_KEYS = COMPANY_SECTIONS.flatMap((sec) => sec.fields.map((f) => f.key))
 
 function CompanyTab({ settings, onSave }: { settings: SiteSettings; onSave: (patch: SiteSettings) => Promise<void> }) {
   const [draft, setDraft] = useState<SiteSettings>(settings)
   const [saving, setSaving] = useState(false)
-  const dirty = useMemo(() => COMPANY_FIELDS.some((f) => (draft[f.key] ?? '') !== (settings[f.key] ?? '')), [draft, settings])
+  const dirty = useMemo(() => COMPANY_ALL_KEYS.some((k) => (draft[k] ?? '') !== (settings[k] ?? '')), [draft, settings])
 
   const save = async () => {
     setSaving(true)
     const patch: SiteSettings = {}
-    for (const f of COMPANY_FIELDS) patch[f.key] = draft[f.key] ?? ''
+    for (const k of COMPANY_ALL_KEYS) patch[k] = draft[k] ?? ''
     await onSave(patch)
     setSaving(false)
   }
@@ -493,9 +644,9 @@ function CompanyTab({ settings, onSave }: { settings: SiteSettings; onSave: (pat
     <div>
       <div className="flex items-center justify-between mb-3">
         <div>
-          <h2 className="font-display text-2xl">Company page</h2>
+          <h2 className="font-display text-2xl">Company profile — halaman Tentang</h2>
           <p className="text-xs text-muted-foreground mt-1">
-            Content for /company. Sections left empty show a placeholder on the website until filled — no text is invented automatically.
+            Konten halaman /about (mengikuti Company Profile PT Dani Era Mardika). Baris kosong = paragraf baru.
           </p>
         </div>
         <button onClick={save} disabled={saving || !dirty} className="btn-primary !py-2.5 !px-5 disabled:opacity-40 shrink-0">
@@ -503,9 +654,42 @@ function CompanyTab({ settings, onSave }: { settings: SiteSettings; onSave: (pat
         </button>
       </div>
 
-      <div className="space-y-4 bg-white border border-line p-6 mt-4">
-        {COMPANY_FIELDS.map((f) => (
-          <AreaField key={f.key} label={f.label} value={draft[f.key] ?? ''} onChange={(v) => setDraft((p) => ({ ...p, [f.key]: v }))} rows={4} hint={f.hint} />
+      <div className="space-y-8 mt-4">
+        {COMPANY_SECTIONS.map((sec) => (
+          <div key={sec.title} className="bg-white border border-line p-6">
+            <p className="kicker !text-[10px] mb-5">{sec.title}</p>
+            <div className="space-y-4">
+              {sec.fields.map((f) =>
+                f.image ? (
+                  <ImageField
+                    key={f.key}
+                    label={f.label}
+                    value={draft[f.key] ?? ''}
+                    onChange={(v) => setDraft((p) => ({ ...p, [f.key]: v }))}
+                    aspect="aspect-[4/3]"
+                    hint={f.hint}
+                  />
+                ) : f.area ? (
+                  <AreaField
+                    key={f.key}
+                    label={f.label}
+                    value={draft[f.key] ?? ''}
+                    onChange={(v) => setDraft((p) => ({ ...p, [f.key]: v }))}
+                    rows={4}
+                    hint={f.hint}
+                  />
+                ) : (
+                  <TextField
+                    key={f.key}
+                    label={f.label}
+                    value={draft[f.key] ?? ''}
+                    onChange={(v) => setDraft((p) => ({ ...p, [f.key]: v }))}
+                    hint={f.hint}
+                  />
+                ),
+              )}
+            </div>
+          </div>
         ))}
       </div>
     </div>
@@ -765,6 +949,7 @@ export function AdminView() {
             <TabsTrigger value="products" className="rounded-none data-[state=active]:bg-ink data-[state=active]:text-white text-xs tracking-wider">Products</TabsTrigger>
             <TabsTrigger value="categories" className="rounded-none data-[state=active]:bg-ink data-[state=active]:text-white text-xs tracking-wider">Categories</TabsTrigger>
             <TabsTrigger value="journal" className="rounded-none data-[state=active]:bg-ink data-[state=active]:text-white text-xs tracking-wider">Journal</TabsTrigger>
+            <TabsTrigger value="testimoni" className="rounded-none data-[state=active]:bg-ink data-[state=active]:text-white text-xs tracking-wider">Testimoni</TabsTrigger>
             <TabsTrigger value="website" className="rounded-none data-[state=active]:bg-ink data-[state=active]:text-white text-xs tracking-wider">Website</TabsTrigger>
             <TabsTrigger value="company" className="rounded-none data-[state=active]:bg-ink data-[state=active]:text-white text-xs tracking-wider">Company</TabsTrigger>
             <TabsTrigger value="social" className="rounded-none data-[state=active]:bg-ink data-[state=active]:text-white text-xs tracking-wider">Social & Contact</TabsTrigger>
@@ -773,6 +958,7 @@ export function AdminView() {
           <TabsContent value="products" className="mt-6"><ProductsTab /></TabsContent>
           <TabsContent value="categories" className="mt-6"><CategoriesTab /></TabsContent>
           <TabsContent value="journal" className="mt-6"><JournalTab /></TabsContent>
+          <TabsContent value="testimoni" className="mt-6"><TestimonialsTab /></TabsContent>
           {globalSettings !== null && (
             <>
               <TabsContent value="website" className="mt-6"><WebsiteTab key={`w${settingsVersion}`} settings={globalSettings} onSave={saveSettings} /></TabsContent>

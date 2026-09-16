@@ -187,3 +187,24 @@ Stage Summary:
 - DB Supabase aman self-provision (DDL via DIRECT_URL) dan CMS punya tombol seed/repair non-destruktif.
 - Foto HP besar otomatis dikompres di browser sebelum upload.
 - Owner tetap perlu: set env NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY di Vercel (bila belum), lalu redeploy.
+
+---
+Task ID: 11
+Agent: Super Z (main agent)
+Task: Merge halaman Company+About (template PDF) + section testimoni foto di homepage
+
+Work Log:
+- Sinkronisasi git: sandbox checkpoint merusak history lokal (kode Task 10 hilang + schema sqlite); reset ke origin/main yang berisi commit foto baru owner (hero.jpg, brand.jpg) + schema postgresql. /upload/ di-gitignore.
+- Ekstrak 3 foto dari "PT Derma Company Profile_compressed.pdf" (pdfimages + sharp): founder portrait, fasilitas lab+produksi, founder di lab → public/images/company/*.jpg (scripts/extract-pdf-images.ts).
+- Merge Company+About → SATU halaman /about "Tentang KINSUROI — Company Profile" mengikuti template PDF: 01 Siapa Kami (+facts grid), 02 Kenapa Pabrik Sendiri (+2 kartu highlight + kutipan besar), 03 Formulasi & Produksi In-House (+Encapsulation +Ekstrak Alami), 04 Brand KINSUROI (+Kintsukuroi), Visi&Misi + Nilai (opsional, tampil jika terisi), Company Information. /company → redirect 308 permanen via next.config; CompanyView.tsx dihapus; Navbar/Footer/sitemap dibersihkan.
+- seed.ts: 18 setting company_* baru berisi konten literal dari PDF (siapa kami, founder, facts, pabrik, kontrol kualitas, tanggung jawab, kutipan, produksi, encapsulation, ekstrak alami, brand story, kintsukuroi, visi, nilai, 3 path foto). seedMissing kini MENGISI setting yang masih kosong (tidak pernah menimpa isi owner) → owner cukup klik "Seed / repair content" di CMS agar konten PDF masuk ke database produksi.
+- Testimonial: model baru di prisma/schema.prisma (postgres) + prisma/schema.local.prisma (sqlite mirror utk sandbox) + DDL db-setup + supabase/schema.sql; API /api/testimonials (GET publik/admin, POST admin) & /api/testimonials/[id] (PATCH/DELETE admin; DELETE juga menghapus file foto dari storage); bootstrap/data/store membawa testimonials (dengan guard catch utk kompatibilitas).
+- Homepage: section "KATA MEREKA" (galeri foto testimoni 4:5, snap-scroll, caption/nama/sumber opsional), disembunyikan otomatis saat kosong, diposisikan setelah CTA banner.
+- CMS: tab "Testimoni" (list + editor dialog + ImageField upload + status draft/published + urutan + konfirmasi hapus); tab Company dirombak jadi 5 section sesuai struktur PDF (termasuk 3 ImageField foto).
+- .env sandbox dipulihkan (ADMIN_PASSWORD/ADMIN_SECRET hilang karena reset).
+- Verifikasi: build exit 0; login 200; seed repair menambah/mengisi 17 setting; bootstrap membawa company_about 1152 chars; /about merender semua section; /company → 308 /about; testimoni create 201 → tampil di homepage ("KATA MEREKA") → PATCH 200 → DELETE 200.
+
+Stage Summary:
+- Halaman Tentang kini = Company Profile resmi (dari PDF), CMS Company tab mengikuti struktur PDF, foto founder/fasilitas otomatis terpasang.
+- Testimoni foto bisa dikelola penuh via CMS (upload/ganti/hapus/urutan/draft) dan tampil elegan di beranda.
+- Owner perlu: klik "Seed / repair content" di /admin (mengisi konten PDF ke DB produksi), lalu upload foto testimoni via tab Testimoni.

@@ -201,6 +201,60 @@ function CtaBanner() {
   )
 }
 
+/* ─────────────────────── TESTIMONI FOTO ─────────────────────── */
+
+function Testimonials() {
+  const testimonials = useK((st) => st.testimonials)
+  if (!testimonials || testimonials.length === 0) return null
+
+  return (
+    <section className="bg-white py-20 md:py-32">
+      <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
+        <Reveal className="text-center mb-12 md:mb-16">
+          <p className="kicker mb-5">Testimoni</p>
+          <h2 className="font-display text-4xl md:text-5xl text-ink">KATA MEREKA</h2>
+          <p className="mt-5 text-muted-foreground font-light max-w-lg mx-auto">
+            Cerita dan pengalaman dari mereka yang menjadikan KINSUROI bagian dari ritual hariannya.
+          </p>
+        </Reveal>
+
+        <div
+          className="flex gap-5 md:gap-8 overflow-x-auto pb-4 snap-x snap-mandatory thin-scroll -mx-6 px-6 lg:mx-0 lg:px-0"
+          role="list"
+          aria-label="Foto testimoni pelanggan"
+        >
+          {testimonials.map((t, i) => (
+            <Reveal key={t.id} delay={Math.min(i, 4) * 0.08} className="snap-start shrink-0 w-[220px] sm:w-[260px] md:w-[300px]">
+              <figure role="listitem">
+                <div className="relative aspect-[4/5] bg-sand overflow-hidden">
+                  <Image
+                    src={t.image}
+                    alt={t.name ? `Testimoni ${t.name}` : 'Testimoni pelanggan KINSUROI'}
+                    fill
+                    sizes="(max-width: 640px) 60vw, 300px"
+                    className="object-cover"
+                  />
+                </div>
+                {(t.name || t.caption || t.source) && (
+                  <figcaption className="pt-4">
+                    {t.caption && (
+                      <p className="text-sm text-muted-foreground font-light leading-relaxed line-clamp-3">&ldquo;{t.caption}&rdquo;</p>
+                    )}
+                    <div className="mt-2 flex items-baseline justify-between gap-3">
+                      {t.name && <p className="text-[11px] tracking-[0.2em] uppercase text-ink">{t.name}</p>}
+                      {t.source && <p className="text-[10px] tracking-[0.18em] uppercase text-muted-foreground/60">{t.source}</p>}
+                    </div>
+                  </figcaption>
+                )}
+              </figure>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 /* ─────────────────────── JOURNAL PREVIEW ─────────────────────── */
 
 export function JournalCard({ article, index = 0 }: { article: Article; index?: number }) {
@@ -355,6 +409,7 @@ export function HomeView() {
       <BrandIntro />
       <Collection />
       <CtaBanner />
+      <Testimonials />
       <JournalPreview />
       <ContactBlock />
     </main>

@@ -138,12 +138,92 @@ export const settings: { key: string; value: string; group: string }[] = [
   { key: 'contact_phone_2', value: '+62 21 29437987', group: 'contact' },
   { key: 'contact_email', value: '', group: 'contact' },
   { key: 'contact_whatsapp', value: '085888244750', group: 'contact' },
-  // Company page (content slots — filled via CMS, nothing invented here)
-  { key: 'company_about', value: '', group: 'company' },
-  { key: 'company_vision', value: '', group: 'company' },
+  // Company profile ("Tentang") — follows the owner's official PDF
+  // "Company Profile — PT Dani Era Mardika". Editable via CMS at any time.
+  {
+    key: 'company_about',
+    value:
+      'PT Dani Era Mardika adalah boutique manufaktur skincare kosmetik yang berdiri di Indonesia pada 2022, dibangun oleh Dipl.-Ing. Daniel A. Bung dengan pengalaman lebih dari 30 tahun di industri kosmetik Jerman dan Eropa.\n\nGagasan mendirikan fasilitas ini berangkat dari visi untuk membangun kemampuan industri skincare kosmetik Indonesia agar mampu menghasilkan produk berbasis scientific research, berkualitas tinggi, dan memiliki standar yang dapat sejajar dengan negara maju.\n\nPengembangan formula berlandaskan riset dan pengalaman lapangan, dengan memahami kondisi iklim, lingkungan, karakteristik kulit, serta permasalahan konsumen Indonesia. Untuk pasar ekspor, formula dikembangkan secara adaptif sesuai kondisi, kebutuhan konsumen, dan persyaratan negara tujuan.\n\nFasilitas ini menjadi fondasi pengembangan KINSUROI sekaligus bagian dari upaya membangun industri kosmetik Indonesia yang lebih mandiri — menghasilkan skincare kosmetik Indonesia yang tidak hanya mampu memenuhi kebutuhan pasar dalam negeri, tetapi memiliki kualitas, teknologi, dan daya saing untuk menembus pasar global serta berdiri sejajar dengan produk dari negara-negara maju.',
+    group: 'company',
+  },
+  { key: 'company_founder', value: 'Dipl.-Ing. Daniel A. Bung — Founder & Formulator, PT Dani Era Mardika', group: 'company' },
+  {
+    key: 'company_facts',
+    value:
+      'Badan Hukum: PT (Perseroan Terbatas)\nBidang Usaha: Skincare kosmetik standar internasional\nFasilitas: Bersertifikat CPKB (GMP) dan Halal\nBrand Internal: KINSUROI',
+    group: 'company',
+  },
+  {
+    key: 'company_factory',
+    value:
+      'PT Dani Era Mardika didirikan untuk mendukung brand internal KINSUROI, dengan pabrik sendiri sebagai fondasinya. Pendekatan ini didasari pengamatan langsung Daniel A. Bung selama berkarir di lapangan industri kosmetik Jerman: brand-brand yang memegang kendali kualitas paling konsisten adalah yang memiliki pabrik CPKB sendiri, bukan yang sepenuhnya bergantung pada pihak ketiga.',
+    group: 'company',
+  },
+  {
+    key: 'company_quality',
+    value:
+      'Standar dan konsistensi produk dipegang penuh dari hulu ke hilir, tidak bergantung pada pihak eksternal yang bisa berubah standar atau bahan bakunya.',
+    group: 'company',
+  },
+  {
+    key: 'company_responsibility',
+    value:
+      'Setiap batch produk yang keluar menjadi tanggung jawab langsung PT Dani Era Mardika, dari formulasi sampai produk jadi.',
+    group: 'company',
+  },
+  {
+    key: 'company_quote',
+    value:
+      'Hasil dari model ini: produk KINSUROI dapat diproduksi dengan kualitas tinggi standar Jerman, karena seluruh proses berada di bawah kendali perusahaan sendiri.',
+    group: 'company',
+  },
+  {
+    key: 'company_production',
+    value:
+      'PT Dani Era Mardika menjalankan formulasi dan produksi skincare secara in-house, dipimpin langsung oleh Dipl.-Ing. Daniel A. Bung sebagai Formulator dan Strategy Development Produk, dengan lebih dari 30 tahun pengalaman di industri kosmetik, termasuk pengalaman dan pendidikan di Jerman. Pengembangan produk memadukan German formulation approach dengan riset lapangan terhadap iklim, kondisi kulit, serta permasalahan dan kebutuhan konsumen Indonesia.',
+    group: 'company',
+  },
+  {
+    key: 'company_encapsulation',
+    value:
+      'Zat aktif tertentu dikembangkan menggunakan teknologi micro-encapsulation, termasuk Ascorbic Acid, Bakuchiol, Niacinamide, Retinol, Tranexamic Acid, Ceramide, dan lainnya. PT Dani Era Mardika memiliki hak import bahan baku secara langsung serta mengembangkan sistem encapsulation dengan pendekatan teknologi farmasi, untuk meningkatkan stabilitas terhadap oksidasi, kompatibilitas formulasi, skin delivery, dan efektivitas zat aktif.',
+    group: 'company',
+  },
+  {
+    key: 'company_natural',
+    value:
+      'Sebagai anak bangsa dan perusahaan yang lahir di Indonesia, kami bersyukur atas kekayaan hayati yang dianugerahkan Indonesia, dengan berbagai tanaman potensial seperti Buah Merah Papua, Aloe Vera, Chamomile, Lavender, Rosemary, dan berbagai tanaman lainnya.\n\nKami berkomitmen untuk mengembangkan potensi bahan baku hayati Indonesia, mengolahnya menjadi ekstrak berkualitas tinggi dengan standar cosmetic grade, serta memberikan nilai tambah melalui pengembangan dan formulasi untuk industri kosmetik berstandar internasional.',
+    group: 'company',
+  },
+  {
+    key: 'company_brand_story',
+    value:
+      'KINSUROI adalah brand internal PT Dani Era Mardika, lahir dari inovasi dan pemikiran Dipl.-Ing. Daniel A. Bung dalam melihat kondisi industri skincare saat ini.\n\nDi tengah overload produk, active ingredients, dan rutinitas yang semakin kompleks, konsumen justru semakin sulit memahami apa yang benar-benar dibutuhkan kulitnya. Penggunaan terlalu banyak produk dan active ingredients secara bersamaan juga dapat meningkatkan risiko irritation, incompatibility, dan skin barrier yang terganggu.\n\nDari sinilah KINSUROI lahir dengan filosofi Simple & Clear: formulasi tetap berbasis teknologi dan inovasi, tetapi setiap bahan dan setiap fungsi harus memiliki tujuan yang jelas, relevan, dan dibutuhkan oleh kulit.',
+    group: 'company',
+  },
+  {
+    key: 'company_kintsukuroi',
+    value:
+      'Nama KINSUROI terinspirasi dari filosofi Jepang Kintsukuroi — memperbaiki sesuatu yang retak dengan emas, dan menjadikan bekas perbaikannya sebagai bagian dari keindahan.\n\nFilosofi ini mengajarkan bahwa keindahan tidak selalu lahir dari sesuatu yang sempurna atau berlebihan. Justru melalui hal yang simple, tepat, dan penuh makna, sesuatu dapat memiliki nilai dan keindahan yang lebih dalam.\n\nSemangat inilah yang menjadi dasar KINSUROI: Simple & Clear — tidak mengejar kompleksitas, tetapi memahami apa yang benar-benar dibutuhkan dan menjadikannya bernilai.',
+    group: 'company',
+  },
+  {
+    key: 'company_vision',
+    value:
+      'Menghasilkan skincare kosmetik Indonesia yang tidak hanya mampu memenuhi kebutuhan pasar dalam negeri, tetapi memiliki kualitas, teknologi, dan daya saing untuk menembus pasar global serta berdiri sejajar dengan produk dari negara-negara maju.',
+    group: 'company',
+  },
   { key: 'company_mission', value: '', group: 'company' },
-  { key: 'company_values', value: '', group: 'company' },
-  { key: 'company_quality', value: '', group: 'company' },
+  {
+    key: 'company_values',
+    value:
+      'Bersih — Formula yang dipikirkan matang dan informasi yang jujur. Apa yang tertulis di label adalah yang kamu dapatkan.\nElegan — Desain yang tenang dalam segala hal — dari produknya sendiri hingga cara kamu menggunakannya.\nSederhana — Tanpa tekanan sepuluh langkah. Produk esensial yang menghormati waktumu dan kulitmu.\nTerpercaya — Informasi yang jelas, kanal resmi, dan tim yang selalu merespons ketika kamu menghubungi.',
+    group: 'company',
+  },
+  // Company page photos (extracted from the official PDF; replaceable via CMS)
+  { key: 'company_founder_image', value: '/images/company/company-founder.jpg', group: 'company' },
+  { key: 'company_factory_image', value: '/images/company/company-facility.jpg', group: 'company' },
+  { key: 'company_lab_image', value: '/images/company/company-founder-lab.jpg', group: 'company' },
   // Social media (official channels — editable via CMS)
   { key: 'social_shopee', value: '', group: 'social' },
   { key: 'social_tiktok', value: '', group: 'social' },
@@ -252,6 +332,11 @@ export async function seedMissing(client: PrismaClient): Promise<SeedReport> {
     const exists = await client.siteSetting.findUnique({ where: { key: st.key } })
     if (!exists) {
       await client.siteSetting.create({ data: st })
+      report.settings++
+    } else if (!exists.value.trim() && st.value.trim()) {
+      // Repair mode also fills EMPTY values with defaults — owner-entered
+      // content is never overwritten, only blanks get completed.
+      await client.siteSetting.update({ where: { key: st.key }, data: { value: st.value, group: st.group } })
       report.settings++
     }
   }
