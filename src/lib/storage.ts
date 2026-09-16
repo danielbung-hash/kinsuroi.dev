@@ -57,6 +57,9 @@ export function storageMode(): 'supabase' | 'local' {
  * is cached per server instance to avoid a round-trip on every upload.
  */
 let bucketReady: Promise<boolean> | null = null
+// Last bucket-provisioning failure (diagnostics only — safe to surface:
+// Supabase storage error bodies never contain credentials).
+let lastBucketError: string | null = null
 
 async function bucketExists(cfg: { url: string; serviceKey: string }): Promise<boolean> {
   const res = await fetch(`${cfg.url}/storage/v1/bucket/${SUPABASE_BUCKET}`, {
@@ -88,6 +91,7 @@ async function ensureBucket(cfg: { url: string; serviceKey: string }): Promise<b
       // Parallel requests may race — re-verify before giving up
       if (await bucketExists(cfg)) return true
       const detail = await create.text().catch(() => '')
+      lastBucketError = `bucket "${SUPABASE_BUCKET}" tidak ada & gagal dibuat otomatis (HTTP ${create.status}: ${detail.slice(0, 160)})`
       console.error('[storage] bucket create failed', create.status, detail.slice(0, 200))
       return false
     })().catch(() => false)
@@ -134,12 +138,19 @@ export async function saveImage(file: File, folder = 'products'): Promise<SaveRe
     }
     if (!res.ok) {
       const detail = await res.text().catch(() => '')
-      // Never echo credentials or raw provider errors that may include config
+      // Never echo credentials — but DO surface Supabase's own diagnostic
+      // message (e.g. RLS violation, invalid key, bucket missing) so the
+      // CMS shows the real cause instead of a generic failure.
       console.error('supabase storage upload failed', res.status, detail.slice(0, 300))
-      throw new Error(
+      const clean = detail.replace(/\s+/g, ' ').slice(0, 180)
+      const hint =
         res.status === 404
           ? 'Bucket "product-images" tidak ada di Supabase Storage dan gagal dibuat otomatis. Buat manual: Supabase Dashboard → Storage → New bucket (nama: product-images, Public).'
-          : `Gagal mengunggah ke Supabase Storage (HTTP ${res.status}). Cek konfigurasi bucket / SUPABASE_SERVICE_ROLE_KEY.`
+          : res.status === 400 && /row level security|policy/i.test(detail)
+            ? 'Upload ditolak RLS Supabase (kemungkinan SUPABASE_SERVICE_ROLE_KEY bukan service key asli — cek ulang di Supabase Dashboard → Settings → API).'
+            : null
+      throw new Error(
+        `Gagal mengunggah ke Supabase Storage (HTTP ${res.status})${clean ? `: ${clean}` : ''}. ${hint ?? 'Cek konfigurasi bucket / SUPABASE_SERVICE_ROLE_KEY.'}${lastBucketError ? ` | ${lastBucketError}` : ''}`,
       )
     }
     return {
