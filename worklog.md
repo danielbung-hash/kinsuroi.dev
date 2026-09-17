@@ -327,3 +327,17 @@ Work Log:
 
 Stage Summary:
 - Brand header lockup live on production; dev-server screenshot workflow used for QA
+
+---
+Task ID: 18
+Agent: main (Super Z)
+Task: Fix product photos cut off on /products page
+
+Work Log:
+- Root cause: real uploaded photos are 3:4 (0.75) and 2:3 (0.667) ratio, but ProductCard/detail frames are 4:5 (0.8) with object-cover -> top & bottom of photos cropped
+- Fix: ProductCard.tsx & ProductDetailView.tsx main image + gallery thumbs switched to object-contain with padding (sand bg becomes studio backdrop); full photo always visible
+- Verified: production photo ratios measured (1086x1448, 768x1024, 724x1086); before/after screenshot proof with real product images (scripts/img-fix-proof.png); next build exit 0
+- Local sandbox env was reset (only DATABASE_URL=file:... in .env, no Supabase creds) -> local DB empty; verified via production API + static demo instead
+
+Stage Summary:
+- Commit 985ec7c ready; PUSH BLOCKED: no credentials in remote (PAT removed after last push per security practice) -> need PAT from owner to push 985ec7c + ce38a5d
