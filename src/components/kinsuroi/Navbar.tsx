@@ -49,7 +49,8 @@ function BrandBlock({ logoClass }: { logoClass: string }) {
   return (
     <span className="flex flex-col items-start">
       <LogoImage className={logoClass} />
-      <span className="mt-1 font-body text-[7px] md:text-[8px] tracking-[0.3em] uppercase text-ink/55 select-none whitespace-nowrap">
+      {/* Ukuran tagline diperbesar dari 7px/8px jadi 9px/10px */}
+      <span className="mt-1 font-body text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-ink/55 select-none whitespace-nowrap">
         The Beauty of Simplicity
       </span>
     </span>
@@ -86,7 +87,8 @@ export function Navbar() {
           scrolled ? 'bg-white/95 backdrop-blur-md border-b border-line' : 'bg-transparent border-b border-transparent'
         }`}
       >
-        <div className="mx-auto max-w-[1440px] px-6 lg:px-12 h-16 md:h-20 flex items-center justify-between">
+        {/* Tinggi header sedikit dinaikkan dari h-16 md:h-20 jadi h-20 md:h-24 agar logo yg lebih besar muat */}
+        <div className="mx-auto max-w-[1440px] px-6 lg:px-12 h-20 md:h-24 flex items-center justify-between">
           {/* Mobile hamburger */}
           <button
             className="lg:hidden -ml-2 p-2 text-ink"
@@ -96,9 +98,9 @@ export function Navbar() {
             <Menu size={22} strokeWidth={1.5} />
           </button>
 
-          {/* Logo + tagline */}
+          {/* Logo + tagline. Ukuran dinaikkan dari h-9 md:h-11 jadi h-12 md:h-14 */}
           <Link href="/" className="flex items-center" aria-label="KINSUROI — beranda">
-            <BrandBlock logoClass="h-9 md:h-11" />
+            <BrandBlock logoClass="h-12 md:h-14" />
           </Link>
 
           {/* Desktop nav */}
@@ -137,8 +139,9 @@ export function Navbar() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35, ease: 'easeOut' }}
           >
-            <div className="flex items-center justify-between px-6 h-16 border-b border-line">
-              <BrandBlock logoClass="h-8" />
+            <div className="flex items-center justify-between px-6 h-20 border-b border-line">
+              {/* Ukuran logo di menu mobile diperbesar dari h-8 jadi h-10 */}
+              <BrandBlock logoClass="h-10" />
               <button className="p-2 text-ink" onClick={() => setOpen(false)} aria-label="Tutup menu">
                 <X size={22} strokeWidth={1.5} />
               </button>
