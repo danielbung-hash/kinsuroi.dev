@@ -47,7 +47,7 @@ export function LogoImage({ className = 'h-7 md:h-8' }: { className?: string }) 
 /** Logo + tagline lockup — shared by the header and the mobile menu. */
 function BrandBlock({ logoClass }: { logoClass: string }) {
   return (
-    <span className="flex flex-col items-start">
+    <span className="flex flex-col items-center">
       <LogoImage className={logoClass} />
       {/* Ukuran tagline diperbesar dari 7px/8px jadi 9px/10px */}
       <span className="mt-1 font-body text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-ink/55 select-none whitespace-nowrap">
