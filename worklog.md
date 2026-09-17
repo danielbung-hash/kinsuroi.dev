@@ -313,3 +313,17 @@ Work Log:
 Stage Summary:
 - Social links live; prod upload pipeline confirmed working end-to-end by user
 - Remaining optional: user uploads real customer testimonial photos via CMS Testimoni tab; social_youtube/social_facebook intentionally left empty
+
+---
+Task ID: 17
+Agent: main (Super Z)
+Task: Enlarge header logo + add brand tagline
+
+Work Log:
+- Navbar.tsx: added BrandBlock lockup (LogoImage + "The Beauty of Simplicity" tagline in small letterspaced caps, text-ink/55)
+- Header logo enlarged h-7 md:h-8 -> h-9 md:h-11; mobile menu logo h-7 -> h-8 with same tagline; admin login & footer untouched
+- Verified visually via agent-browser at 1280px and 390px (layout intact, no overflow)
+- Pushed 4dd8260; verified live on production (tagline present in SSR HTML + screenshot)
+
+Stage Summary:
+- Brand header lockup live on production; dev-server screenshot workflow used for QA
