@@ -79,7 +79,7 @@ export function ProductDetailView({ slug }: { slug: string }) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Image */}
           <RevealImage>
-            <div className="relative aspect-[4/5] w-full bg-sand overflow-hidden">
+            <div className="relative aspect-[4/5] w-full bg-white overflow-hidden">
               {product.image ? (
                 <Image
                   src={product.image}
@@ -101,7 +101,7 @@ export function ProductDetailView({ slug }: { slug: string }) {
           {gallery.length > 0 && (
             <div className="flex gap-4 mt-6 lg:hidden">
               {gallery.map((g, i) => (
-                <div key={i} className="relative aspect-square w-20 bg-sand overflow-hidden">
+                <div key={i} className="relative aspect-square w-20 bg-white overflow-hidden">
                   <Image src={g} alt={`${product.name} ${i + 1}`} fill sizes="80px" className="object-contain p-1" />
                 </div>
               ))}

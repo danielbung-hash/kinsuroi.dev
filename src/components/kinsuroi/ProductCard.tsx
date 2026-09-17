@@ -33,7 +33,7 @@ export function ProductCard({
     <Reveal delay={(index % 4) * 0.08}>
       <article className="group flex h-full flex-col">
         <HashLink to={`/products/${product.slug}`} ariaLabel={`Lihat ${product.name}`} className="block">
-          <div className="relative aspect-[4/5] bg-sand overflow-hidden">
+          <div className="relative aspect-[4/5] bg-white overflow-hidden">
             <Image
               src={src}
               alt={alt}
