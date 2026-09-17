@@ -44,6 +44,18 @@ export function LogoImage({ className = 'h-7 md:h-8' }: { className?: string }) 
   )
 }
 
+/** Logo + tagline lockup — shared by the header and the mobile menu. */
+function BrandBlock({ logoClass }: { logoClass: string }) {
+  return (
+    <span className="flex flex-col items-start">
+      <LogoImage className={logoClass} />
+      <span className="mt-1 font-body text-[7px] md:text-[8px] tracking-[0.3em] uppercase text-ink/55 select-none whitespace-nowrap">
+        The Beauty of Simplicity
+      </span>
+    </span>
+  )
+}
+
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
@@ -84,9 +96,9 @@ export function Navbar() {
             <Menu size={22} strokeWidth={1.5} />
           </button>
 
-          {/* Logo */}
+          {/* Logo + tagline */}
           <Link href="/" className="flex items-center" aria-label="KINSUROI — beranda">
-            <LogoImage />
+            <BrandBlock logoClass="h-9 md:h-11" />
           </Link>
 
           {/* Desktop nav */}
@@ -126,7 +138,7 @@ export function Navbar() {
             transition={{ duration: 0.35, ease: 'easeOut' }}
           >
             <div className="flex items-center justify-between px-6 h-16 border-b border-line">
-              <LogoImage className="h-7" />
+              <BrandBlock logoClass="h-8" />
               <button className="p-2 text-ink" onClick={() => setOpen(false)} aria-label="Tutup menu">
                 <X size={22} strokeWidth={1.5} />
               </button>
