@@ -39,7 +39,7 @@ export function ProductCard({
               alt={alt}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]"
+              className="object-contain p-5 md:p-6 transition-transform duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]"
             />
             {/* quiet hover veil */}
             <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-700" aria-hidden="true" />

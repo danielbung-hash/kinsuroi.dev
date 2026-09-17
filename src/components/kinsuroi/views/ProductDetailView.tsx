@@ -87,7 +87,7 @@ export function ProductDetailView({ slug }: { slug: string }) {
                   fill
                   priority
                   sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover"
+                  className="object-contain p-8 md:p-12"
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -102,7 +102,7 @@ export function ProductDetailView({ slug }: { slug: string }) {
             <div className="flex gap-4 mt-6 lg:hidden">
               {gallery.map((g, i) => (
                 <div key={i} className="relative aspect-square w-20 bg-sand overflow-hidden">
-                  <Image src={g} alt={`${product.name} ${i + 1}`} fill sizes="80px" className="object-cover" />
+                  <Image src={g} alt={`${product.name} ${i + 1}`} fill sizes="80px" className="object-contain p-1" />
                 </div>
               ))}
             </div>
