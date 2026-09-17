@@ -341,3 +341,16 @@ Work Log:
 
 Stage Summary:
 - Commit 985ec7c ready; PUSH BLOCKED: no credentials in remote (PAT removed after last push per security practice) -> need PAT from owner to push 985ec7c + ce38a5d
+
+---
+Task ID: 18-b
+Agent: main (Super Z)
+Task: Push & verify product image fix on production
+
+Work Log:
+- PAT from owner validated (danielbung-hash, push:true) -> pushed 4dd8260..63f9c12 (3 commits incl. 985ec7c fix) -> remote URL cleaned immediately
+- Vercel auto-deploy confirmed: "object-contain" present in production /products HTML after ~60s
+- Visual verification via agent-browser on production (1280px): all 12 product photos fully visible (pump tops, caps, labels intact), sand backdrop frames photos like studio shots
+
+Stage Summary:
+- Product photo crop issue FIXED and LIVE on production; PAT should be revoked by owner (was shown in chat)
