@@ -712,7 +712,7 @@ const CONTACT_FIELDS = [
   { key: 'contact_phone_1', label: 'Phone 1', area: false },
   { key: 'contact_phone_2', label: 'Phone 2', area: false },
   { key: 'contact_email', label: 'Email', area: false },
-  { key: 'contact_whatsapp', label: 'WhatsApp CTA URL', area: false },
+  { key: 'contact_whatsapp', label: 'WhatsApp (nomor / link wa.me)', area: false },
 ]
 
 const ALL_SETTING_KEYS = [

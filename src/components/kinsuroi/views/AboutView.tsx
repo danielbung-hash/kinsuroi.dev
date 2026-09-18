@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { HashLink } from '../router'
 import { Reveal, RevealImage } from '../Reveal'
 import { useK, s } from '../store'
+import { whatsappLink } from '@/lib/types'
 
 /**
  * Tentang / Company Profile — single page (merged former /about + /company),
@@ -289,7 +290,7 @@ export function AboutView() {
                 {wa && (
                   <div className="px-6 py-5">
                     <a
-                      href={`https://wa.me/${wa.replace(/[^0-9]/g, '').replace(/^0/, '62')}`}
+                      href={whatsappLink(wa)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn-outline !py-2.5 !px-6 text-[10px] tracking-[0.25em] uppercase"

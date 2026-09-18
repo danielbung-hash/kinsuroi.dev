@@ -5,13 +5,14 @@ import { HashLink } from '../router'
 import { Reveal } from '../Reveal'
 import { useK, s } from '../store'
 import { extractSocial, SocialRow, WhatsAppIcon } from '../SocialIcons'
+import { whatsappLink } from '@/lib/types'
 
 export function ContactView() {
   const settings = useK((st) => st.settings)
   const address = s(settings, 'contact_address', '')
   const phones = [s(settings, 'contact_phone_1', ''), s(settings, 'contact_phone_2', '')].filter(Boolean)
   const email = s(settings, 'contact_email', '')
-  const whatsapp = s(settings, 'contact_whatsapp', '')
+  const whatsapp = whatsappLink(s(settings, 'contact_whatsapp', ''))
   const social = extractSocial(settings)
 
   return (

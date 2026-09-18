@@ -2,7 +2,7 @@
 
 import { Facebook, Instagram, Youtube, ShoppingBag } from 'lucide-react'
 import { s as getSetting } from './store'
-import type { SiteSettings } from '@/lib/types'
+import { whatsappLink, type SiteSettings } from '@/lib/types'
 
 type IconProps = { size?: number; className?: string }
 
@@ -38,7 +38,7 @@ export function extractSocial(settings: SiteSettings): SocialLinks {
     youtube: getSetting(settings, 'social_youtube', ''),
     instagram: getSetting(settings, 'social_instagram', ''),
     facebook: getSetting(settings, 'social_facebook', ''),
-    whatsapp: getSetting(settings, 'contact_whatsapp', ''),
+    whatsapp: whatsappLink(getSetting(settings, 'contact_whatsapp', '')),
   }
 }
 

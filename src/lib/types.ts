@@ -100,6 +100,20 @@ export function normalizeWa(number: string): string {
 }
 
 /**
+ * Turn whatever the owner saved in the CMS (raw number like 085888244750,
+ * +62-form, or a full https://wa.me/... link) into a working WhatsApp URL.
+ * Returns '' for empty/invalid input so callers can hide the entry.
+ */
+export function whatsappLink(raw: string): string {
+  const v = raw.trim()
+  if (!v) return ''
+  if (/^https?:\/\//i.test(v)) return v
+  const digits = v.replace(/[^0-9]/g, '')
+  if (digits.length < 8) return ''
+  return `https://wa.me/${normalizeWa(digits)}`
+}
+
+/**
  * Build the BUY CTA target for a product.
  * Priority: per-product purchaseUrl → per-product marketplaceUrl → official
  * WhatsApp with a prefilled message ("Halo, saya ingin membeli [Produk].").
