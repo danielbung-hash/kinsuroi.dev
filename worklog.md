@@ -354,3 +354,18 @@ Work Log:
 
 Stage Summary:
 - Product photo crop issue FIXED and LIVE on production; PAT should be revoked by owner (was shown in chat)
+
+---
+Task ID: 19
+Agent: main (Super Z)
+Task: Fix WhatsApp button in footer not clickable
+
+Work Log:
+- Root cause: contact_whatsapp setting = raw number '085888244750' -> footer rendered <a href="085888244750"> = relative URL 404 on click
+- Fix: new whatsappLink() helper in types.ts (raw number/+62/link passthrough -> https://wa.me/62xxx); wired into SocialIcons.extractSocial (footer/navbar/home/contact rows), ContactView direct link, AboutView button; AdminView label now 'WhatsApp (nomor / link wa.me)'
+- DISCOVERY: commit 4dd8260 (tagline task, prev session) had silently DELETED src/app/api/upload/route.ts (sandbox file loss got committed) -> owner recreated it manually via GitHub web (e14397c + f7ec344, content correct) + own Navbar tweaks (bigger logo h-12/h-14, centered tagline)
+- Local history had diverged (sandbox reset gave white-frame commit a new hash 683aefa vs remote 9683d8a, content identical); resolved via fetch + git rebase --empty=drop origin/main (owner commits preserved) -> pushed 5315eea
+- Build local OK. PROBLEM: Vercel did NOT deploy 5315eea (product CTAs wa.me live from before, user's upload route live, but footer fix absent >15min; empty commit b5b9496 pushed to retrigger, still not deploying)
+
+Stage Summary:
+- WhatsApp fix code complete & on GitHub main; BLOCKED on Vercel deployment (platform-side: stuck/queued/failed build, needs owner to check Vercel dashboard Deployments status / Redeploy)
