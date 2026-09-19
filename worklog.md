@@ -384,3 +384,21 @@ Work Log:
 Stage Summary:
 - ALL BLOCKED WORK NOW RELEASED & LIVE: WhatsApp footer/contact/about links working, product CTA wa.me, white photo frames, user's navbar tweaks (bigger logo, centered tagline), recreated upload route
 - Root-cause chain fully closed: sandbox file loss -> committed deletion (upload route, restored by owner on GitHub) + sandbox identity z@container -> Vercel deploy block (fixed via filter-branch)
+
+---
+Task ID: 20
+Agent: main (Super Z)
+Task: Add editable plate photo to philosophy (Kintsukuroi) section on About page
+
+Work Log:
+- Owner sketch: photo of KINSUROI kintsugi plate left of philosophy text, photo must be replaceable via Admin CMS
+- Restored locally-lost src/app/api/upload/route.ts from HEAD (git restore; sandbox file loss again)
+- New default asset public/images/company/kintsukuroi-plate.jpg from owner's WhatsApp photo (1125x1106 -> white margins trimmed -> square 1075x1075, 80KB)
+- AboutView kintsukuroi block: two-column grid (RevealImage white square frame object-contain left sm:col-span-5, text right sm:col-span-7; stacks on mobile); reads company_kintsukuroi_image setting with the plate jpg as code default -> works even before any DB value exists
+- AdminView Company tab section 04: added 'Foto piring Kintsukuroi' ImageField (upload -> /api/upload -> Supabase Storage -> URL saved into settings)
+- Visual QA via dev server + injected test settings (TEMP patch on lib/data.ts, reverted before commit): desktop 1440px & mobile 390px screenshots in scripts/philosophy-*.png; plate fills frame after crop (v3)
+- npm run build OK (sandbox postgres error expected — no local Supabase creds; fine on Vercel)
+
+Stage Summary:
+- Commit 976d975 ready: philosophy photo + CMS edit feature; PUSH PENDING — needs owner PAT (no stored credentials, PAT from prior session revoked)
+- Git identity remains danielbung-hash <danielbung@gmail.com> -> Vercel will deploy normally

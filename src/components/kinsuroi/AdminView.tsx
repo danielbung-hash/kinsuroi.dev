@@ -614,6 +614,7 @@ const COMPANY_SECTIONS: { title: string; fields: CompanyField[] }[] = [
     fields: [
       { key: 'company_brand_story', label: 'Cerita brand', area: true },
       { key: 'company_kintsukuroi', label: 'Filosofi Kintsukuroi', area: true },
+      { key: 'company_kintsukuroi_image', label: 'Foto piring Kintsukuroi', image: true, hint: 'Foto piring di sebelah teks filosofi — unggah untuk mengganti' },
     ],
   },
   {

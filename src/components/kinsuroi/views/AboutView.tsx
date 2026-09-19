@@ -98,6 +98,7 @@ export function AboutView() {
   const natural = s(settings, 'company_natural', '').trim()
   const brandStory = s(settings, 'company_brand_story', '').trim()
   const kintsukuroi = s(settings, 'company_kintsukuroi', '').trim()
+  const kintsukuroiImage = s(settings, 'company_kintsukuroi_image', '/images/company/kintsukuroi-plate.jpg').trim()
   const vision = s(settings, 'company_vision', '').trim()
   const mission = s(settings, 'company_mission', '').trim()
   const values = s(settings, 'company_values', '').trim()
@@ -242,10 +243,27 @@ export function AboutView() {
           <Section index={num()} title="Brand KINSUROI">
             {brandStory ? <Paragraphs raw={brandStory} /> : <EmptyNote />}
             {kintsukuroi && (
-              <Reveal className="mt-8 bg-sand px-8 py-10">
-                <p className="kicker !text-[10px] mb-4">Terinspirasi Seni Jepang Kintsukuroi</p>
-                <Paragraphs raw={kintsukuroi} />
-                <p className="mt-6 font-display text-lg text-bronze italic">KINSUROI — The Beauty of Simplicity.</p>
+              <Reveal className="mt-8 bg-sand px-8 py-10 md:px-12 md:py-14">
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-8 md:gap-12 items-center">
+                  {kintsukuroiImage && (
+                    <RevealImage className="sm:col-span-5">
+                      <div className="relative aspect-square w-full bg-white overflow-hidden">
+                        <Image
+                          src={kintsukuroiImage}
+                          alt="Piring Kintsukuroi — seni memperbaiki keretakkan dengan emas"
+                          fill
+                          sizes="(max-width: 640px) 100vw, 380px"
+                          className="object-contain p-6 md:p-8"
+                        />
+                      </div>
+                    </RevealImage>
+                  )}
+                  <div className={kintsukuroiImage ? 'sm:col-span-7' : 'sm:col-span-12'}>
+                    <p className="kicker !text-[10px] mb-4">Terinspirasi Seni Jepang Kintsukuroi</p>
+                    <Paragraphs raw={kintsukuroi} />
+                    <p className="mt-6 font-display text-lg text-bronze italic">KINSUROI — The Beauty of Simplicity.</p>
+                  </div>
+                </div>
               </Reveal>
             )}
           </Section>
