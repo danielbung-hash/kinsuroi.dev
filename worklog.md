@@ -402,3 +402,18 @@ Work Log:
 Stage Summary:
 - Commit 976d975 ready: philosophy photo + CMS edit feature; PUSH PENDING — needs owner PAT (no stored credentials, PAT from prior session revoked)
 - Git identity remains danielbung-hash <danielbung@gmail.com> -> Vercel will deploy normally
+
+---
+Task ID: 20-b
+Agent: main (Super Z)
+Task: Push philosophy plate feature + close out deploy-author saga
+
+Work Log:
+- Verified remote main ALL commits now authored danielbung@gmail.com -> Vercel deploying normally; WhatsApp fix confirmed LIVE in production footer (<a href="https://wa.me/6285888244750" target="_blank" rel="noopener noreferrer">)
+- Found local commit 23ff4fa ("worklog: task 19-b") was a mishmash: Task 20 feature + accidental deletion of src/app/api/upload/route.ts (sandbox file loss again) + 2 sandbox-only stray files (KinsuroiApp.tsx shell, views/CompanyView.tsx — not imported by src/app, never in remote)
+- Reconstructed cleanly: soft-reset onto origin/main, restored route.ts from remote, dropped strays, recommitted ONLY Task 20 files as 26f3bf8 "feat: editable Kintsukuroi plate photo in philosophy section (About) + Admin CMS image field"
+- Owner's 10 hero-image/HomeView GitHub-web commits (74bb688..9081f17) fully preserved as rebase base; local build passed; pushed fast-forward 9081f17..26f3bf8 with owner PAT (used in push URL arg only, never persisted to remote config)
+- Production verified LIVE: /about renders plate <img> (object-contain p-6 md:p-8) + wa.me links on / and /about + owner's hero.jpg visible on homepage
+
+Stage Summary:
+- Philosophy plate photo feature SHIPPED; deploy-author issue fully closed; owner MUST revoke PAT exposed in chat (github_pat_11COOZ... — treat as compromised)
