@@ -28,7 +28,7 @@ function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1, ease }}
           >
-            Kinsuroi — Clean Beauty
+            Kinsuroi — The Beauty of Simplicity
           </motion.p>
 
           <motion.h1
