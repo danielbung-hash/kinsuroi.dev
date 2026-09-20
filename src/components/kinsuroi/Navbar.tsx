@@ -204,9 +204,9 @@ export function Navbar() {
             <BrandBlock logoClass="h-12 md:h-14" />
           </Link>
 
-          {/* GRUP NAVIGASI & IKON */}
-          {/* ml-auto mendorong seluruh grup ini ke kanan, mepet dengan Kontak */}
-          <div className="hidden lg:flex items-center gap-8 xl:gap-10 ml-auto">
+          {/* GRUP NAVIGASI & IKON (Di-tengah / Centered) */}
+          {/* flex-1 & justify-center membuat grup ini berada di tengah layar */}
+          <div className="hidden lg:flex flex-1 items-center justify-center gap-8 xl:gap-10">
             
             {/* Desktop nav */}
             <nav className="flex items-center gap-9 xl:gap-11" aria-label="Navigasi utama">
@@ -246,6 +246,9 @@ export function Navbar() {
             </div>
           </div>
 
+          {/* Spacer kanan biar layout seimbang (Logo kiri, Menu tengah) */}
+          <span className="hidden lg:block w-[120px] xl:w-[150px]" aria-hidden="true" />
+          
           {/* spacer to balance mobile layout */}
           <span className="lg:hidden w-8" aria-hidden="true" />
         </div>
