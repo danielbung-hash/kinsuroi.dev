@@ -81,7 +81,7 @@ function Hero() {
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 54vw"
-              className="object-cover object-[68%_center] lg:object-[78%_center]"
+              className="object-cover object-[50%_35%]"
             />
           </motion.div>
         </div>
