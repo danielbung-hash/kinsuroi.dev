@@ -32,7 +32,18 @@ export function ContactView() {
             <div className="px-8 py-10 h-full">
               <MapPin size={20} strokeWidth={1.5} className="text-bronze mb-5" aria-hidden="true" />
               <h2 className="kicker !text-[10px] mb-3">Alamat</h2>
-              <p className="text-sm leading-relaxed text-ink/80">{address || 'Alamat akan segera tersedia.'}</p>
+              {address ? (
+                <a 
+                  href="https://share.google/rO3s5OXDrFzsq59K1" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-sm leading-relaxed text-ink/80 hover:text-bronze transition-colors underline decoration-dotted underline-offset-4"
+                >
+                  {address}
+                </a>
+              ) : (
+                <p className="text-sm text-muted-foreground/70 italic font-light">Alamat akan segera tersedia.</p>
+              )}
             </div>
           </Reveal>
 
@@ -102,9 +113,14 @@ export function ContactView() {
 
         {/* Map hint */}
         <Reveal delay={0.2} className="mt-10 text-center">
-          <p className="text-xs text-muted-foreground/70 font-light tracking-wide">
+          <a 
+            href="https://share.google/rO3s5OXDrFzsq59K1" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-xs text-muted-foreground/70 font-light tracking-wide hover:text-bronze transition-colors"
+          >
             Komp. Sentra Niaga Surya Kadu, Kec. Curug, Kota Tangerang, Banten — Indonesia
-          </p>
+          </a>
         </Reveal>
       </div>
     </main>
