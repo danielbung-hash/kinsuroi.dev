@@ -369,7 +369,14 @@ export function ContactBlock() {
                 <MapPin size={18} strokeWidth={1.5} className="mt-1 shrink-0 text-bronze" aria-hidden="true" />
                 <div>
                   <p className="kicker !text-[10px] mb-2">Alamat</p>
-                  <p className="text-sm leading-relaxed text-ink/80 max-w-md">{address}</p>
+                  <a 
+                    href="https://share.google/rO3s5OXDrFzsq59K1" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-sm leading-relaxed text-ink/80 hover:text-bronze transition-colors max-w-md block underline decoration-dotted underline-offset-4"
+                  >
+                    {address}
+                  </a>
                 </div>
               </div>
             )}
