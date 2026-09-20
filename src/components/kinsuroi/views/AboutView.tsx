@@ -302,7 +302,18 @@ export function AboutView() {
                 {infoRows.map((r) => (
                   <div key={r.label} className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-6 px-6 py-5">
                     <p className="text-[11px] tracking-[0.2em] uppercase text-muted-foreground pt-0.5">{r.label}</p>
-                    <p className="sm:col-span-2 text-sm text-ink/85 font-light leading-relaxed">{r.value}</p>
+                    {r.label === 'Alamat' ? (
+                      <a 
+                        href="https://share.google/rO3s5OXDrFzsq59K1" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="sm:col-span-2 text-sm text-ink/85 font-light leading-relaxed hover:text-bronze transition-colors underline decoration-dotted underline-offset-4"
+                      >
+                        {r.value}
+                      </a>
+                    ) : (
+                      <p className="sm:col-span-2 text-sm text-ink/85 font-light leading-relaxed">{r.value}</p>
+                    )}
                   </div>
                 ))}
                 {wa && (
