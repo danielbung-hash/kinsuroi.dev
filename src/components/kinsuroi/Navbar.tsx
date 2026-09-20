@@ -204,38 +204,46 @@ export function Navbar() {
             <BrandBlock logoClass="h-12 md:h-14" />
           </Link>
 
-          {/* Desktop nav — mengikuti logo di sebelah kiri */}
-          <nav className="hidden lg:flex items-center gap-9 xl:gap-11 mr-auto ml-12 xl:ml-16" aria-label="Navigasi utama">
-            {NAV.map((n) => (
-              <Link
-                key={n.to}
-                href={n.to}
-                aria-current={isActive(n.to) ? 'page' : undefined}
-                className={`relative text-[11px] tracking-[0.26em] uppercase transition-colors ${
-                  isActive(n.to) ? 'text-ink nav-active' : 'text-ink/70 hover:text-ink'
-                }`}
-              >
-                {n.label}
-              </Link>
-            ))}
-          </nav>
+          {/* GRUP NAVIGASI & IKON */}
+          {/* ml-auto mendorong seluruh grup ini ke kanan, mepet dengan Kontak */}
+          <div className="hidden lg:flex items-center gap-8 xl:gap-10 ml-auto">
+            
+            {/* Desktop nav */}
+            <nav className="flex items-center gap-9 xl:gap-11" aria-label="Navigasi utama">
+              {NAV.map((n) => (
+                <Link
+                  key={n.to}
+                  href={n.to}
+                  aria-current={isActive(n.to) ? 'page' : undefined}
+                  className={`relative text-[11px] tracking-[0.26em] uppercase transition-colors ${
+                    isActive(n.to) ? 'text-ink nav-active' : 'text-ink/70 hover:text-ink'
+                  }`}
+                >
+                  {n.label}
+                </Link>
+              ))}
+            </nav>
 
-          {/* Desktop icons — search + tas belanja */}
-          <div className="hidden lg:flex items-center gap-6">
-            <button
-              onClick={() => setSearchOpen(true)}
-              className="p-1 text-ink/80 hover:text-ink transition-colors"
-              aria-label="Cari produk"
-            >
-              <Search size={19} strokeWidth={1.5} />
-            </button>
-            <Link
-              href="/products"
-              className="p-1 text-ink/80 hover:text-ink transition-colors"
-              aria-label="Lihat tas belanja"
-            >
-              <ShoppingBag size={19} strokeWidth={1.5} />
-            </Link>
+            {/* Garis pemisah halus (opsional, biar elegant) */}
+            <span className="h-5 w-px bg-ink/15" aria-hidden="true" />
+
+            {/* Desktop icons — search + tas belanja */}
+            <div className="flex items-center gap-6">
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="p-1 text-ink/80 hover:text-ink transition-colors"
+                aria-label="Cari produk"
+              >
+                <Search size={19} strokeWidth={1.5} />
+              </button>
+              <Link
+                href="/products"
+                className="p-1 text-ink/80 hover:text-ink transition-colors"
+                aria-label="Lihat tas belanja"
+              >
+                <ShoppingBag size={19} strokeWidth={1.5} />
+              </Link>
+            </div>
           </div>
 
           {/* spacer to balance mobile layout */}
