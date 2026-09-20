@@ -44,6 +44,18 @@ export function LogoImage({ className = 'h-7 md:h-8' }: { className?: string }) 
   )
 }
 
+/** Logo + tagline lockup — tagline wajib tampil di bawah logo, rata tengah. */
+function BrandBlock({ logoClass }: { logoClass: string }) {
+  return (
+    <span className="flex flex-col items-center">
+      <LogoImage className={logoClass} />
+      <span className="mt-1.5 font-body text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-ink/55 select-none whitespace-nowrap">
+        The Beauty of Simplicity
+      </span>
+    </span>
+  )
+}
+
 /* ────────────────────────── SEARCH OVERLAY ────────────────────────── */
 
 function SearchOverlay({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -171,8 +183,10 @@ export function Navbar() {
   return (
     <>
       <header
-        className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
-          scrolled ? 'bg-white/95 backdrop-blur-md border-b border-line' : 'bg-transparent border-b border-transparent'
+        className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 border-b ${
+          scrolled
+            ? 'bg-white/95 backdrop-blur-md border-line'
+            : 'bg-white/95 backdrop-blur-md border-line lg:bg-transparent lg:backdrop-blur-none lg:border-transparent'
         }`}
       >
         <div className="mx-auto max-w-[1440px] px-6 lg:px-12 h-20 md:h-24 flex items-center justify-between gap-8">
@@ -185,9 +199,9 @@ export function Navbar() {
             <Menu size={22} strokeWidth={1.5} />
           </button>
 
-          {/* Logo — kiri, tanpa tagline (sesuai desain terbaru) */}
+          {/* Logo + tagline — ukuran diperbesar, tagline rata tengah di bawah logo */}
           <Link href="/" className="flex items-center shrink-0" aria-label="KINSUROI — beranda">
-            <LogoImage className="h-10 md:h-12" />
+            <BrandBlock logoClass="h-12 md:h-14" />
           </Link>
 
           {/* Desktop nav — mengikuti logo di sebelah kiri */}
@@ -242,7 +256,7 @@ export function Navbar() {
             transition={{ duration: 0.35, ease: 'easeOut' }}
           >
             <div className="flex items-center justify-between px-6 h-20 border-b border-line">
-              <LogoImage className="h-9" />
+              <BrandBlock logoClass="h-10" />
               <button className="p-2 text-ink" onClick={() => setMenuOpen(false)} aria-label="Tutup menu">
                 <X size={22} strokeWidth={1.5} />
               </button>

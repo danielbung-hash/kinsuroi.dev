@@ -435,3 +435,19 @@ Stage Summary:
 - Committed + pushed with owner PAT; hero now matches owner's mockup 1:1 on production
 
 Addendum (Task 21): owner pushed 3 new commits mid-flow replacing hero.jpg with a PORTRAIT crop (1024x1536, same shoot). Rebased redesign onto it (a1b8800), switched object-position to object-[50%_35%] (portrait = vertical overflow; center would clip face), re-QA'd, pushed aaa1a26. Production verified: nav-active + search button + new crop all live; face fully visible, vase/branch visible, icons over white.
+
+---
+Task ID: 22
+Agent: main (Super Z)
+Task: Hero photo composed for new layout + navbar tagline/logo per owner feedback
+
+Work Log:
+- Owner feedback: (1) compose hero photo professionally for new layout, (2) tagline 'The Beauty of Simplicity' must stay under logo, centered, (3) bigger logo, (4) image must not break the site
+- scripts/compose-hero.py: desktop hero.jpg = 1400x1100 white canvas, portrait photo pasted right flush, left 260px smoothstep feather -> photo melts into text side exactly like owner mockup (152KB); hero-mobile.jpg = 4:5 face+bottle crop (168KB)
+- Hero: separate <Image> per breakpoint — desktop uses hero_image setting (DB value /images/hero.jpg -> composed banner picked up automatically), mobile uses new hero_image_mobile setting (default /images/hero-mobile.jpg); object-[right_35%] / object-[50%_30%]
+- Navbar: BrandBlock restored (logo h-12 md:h-14 + centered uppercase tagline), mobile header always white (max-lg) so tagline stays legible over photo, hero section pt-20 lg:pt-0 so mobile image starts below header
+- Headline wrap: measured text in-browser via canvas (BANYAK. KULITMU = 8.75em, KULITMU BUTUH = 8.01em) -> h1 max-w-[8.4em] forces the mockup's exact 5-line break at every viewport
+- QA screenshots desktop/wide/mobile all clean; build OK
+
+Stage Summary:
+- Pushed with owner PAT; production verified (new banner + tagline live). PAT must still be revoked by owner.

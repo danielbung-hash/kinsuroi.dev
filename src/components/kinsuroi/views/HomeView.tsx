@@ -18,7 +18,7 @@ function Hero() {
   const ease = [0.22, 1, 0.36, 1] as const
 
   return (
-    <section className="relative bg-white overflow-hidden">
+    <section className="relative bg-white overflow-hidden pt-20 lg:pt-0">
       <div className="grid grid-cols-1 lg:grid-cols-12 lg:h-[88svh] lg:min-h-[620px] lg:max-h-[820px]">
         {/* Copy — kiri, rata dengan tepi kontainer situs */}
         <div className="lg:col-span-5 order-2 lg:order-1 flex items-center">
@@ -33,7 +33,7 @@ function Hero() {
             </motion.p>
 
             <motion.h1
-              className="font-display font-medium uppercase text-[2.5rem] leading-[1.06] sm:text-5xl lg:text-[3.1rem] xl:text-[3.55rem] lg:leading-[1.05] text-ink"
+              className="font-display font-medium uppercase text-[2.5rem] leading-[1.06] sm:text-5xl lg:text-[3.1rem] xl:text-[3.55rem] lg:leading-[1.05] text-ink max-w-[8.4em]"
               initial={{ opacity: 0, y: reduce ? 0 : 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.22, ease }}
@@ -67,7 +67,9 @@ function Hero() {
           </div>
         </div>
 
-        {/* Image — kanan, full-bleed sampai tepi layar & ke bawah navbar */}
+        {/* Image — kanan, full-bleed sampai tepi layar & ke bawah navbar.
+            Desktop memakai banner hasil komposisi (foto melebur ke putih di kiri),
+            mobile memakai potret 4:5 agar wajah & produk terlihat besar. */}
         <div className="lg:col-span-7 order-1 lg:order-2 relative h-[56svh] max-h-[540px] lg:h-auto lg:max-h-none">
           <motion.div
             className="absolute inset-0"
@@ -80,8 +82,16 @@ function Hero() {
               alt="Model KINSUROI dalam kimono memegang serum — ritual kecantikan yang sederhana"
               fill
               priority
-              sizes="(max-width: 1024px) 100vw, 54vw"
-              className="object-cover object-[50%_35%]"
+              sizes="54vw"
+              className="hidden lg:block object-cover object-[right_35%]"
+            />
+            <Image
+              src={s(settings, 'hero_image_mobile', '/images/hero-mobile.jpg')}
+              alt="Model KINSUROI dalam kimono memegang serum — ritual kecantikan yang sederhana"
+              fill
+              priority
+              sizes="100vw"
+              className="lg:hidden object-cover object-[50%_30%]"
             />
           </motion.div>
         </div>
