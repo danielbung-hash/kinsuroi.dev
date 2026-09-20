@@ -229,6 +229,17 @@
   .link-underline:hover::after {
     transform: scaleX(1);
   }
+
+  /* Nav item aktif — garis bawah bronze sesuai desain terbaru */
+  .nav-active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -7px;
+    height: 1.5px;
+    background: var(--color-bronze);
+  }
 }
 
 /* Elegant thin scrollbar for admin panels */

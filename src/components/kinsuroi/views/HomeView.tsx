@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { motion, useReducedMotion } from 'framer-motion'
-import { MapPin, Phone } from 'lucide-react'
+import { MapPin, Phone, ArrowRight } from 'lucide-react'
 import { HashLink } from '../router'
 import { Reveal, RevealImage } from '../Reveal'
 import { ProductCard } from '../ProductCard'
@@ -18,72 +18,71 @@ function Hero() {
   const ease = [0.22, 1, 0.36, 1] as const
 
   return (
-    <section className="relative bg-white pt-28 md:pt-40 pb-16 md:pb-24 overflow-hidden">
-      <div className="mx-auto max-w-[1440px] px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-        {/* Copy */}
-        <div className="lg:col-span-6 xl:col-span-5 order-2 lg:order-1">
-          <motion.p
-            className="kicker mb-6"
-            initial={{ opacity: 0, y: reduce ? 0 : 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease }}
-          >
-            Kinsuroi — The Beauty of Simplicity
-          </motion.p>
+    <section className="relative bg-white overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-12 lg:h-[88svh] lg:min-h-[620px] lg:max-h-[820px]">
+        {/* Copy — kiri, rata dengan tepi kontainer situs */}
+        <div className="lg:col-span-5 order-2 lg:order-1 flex items-center">
+          <div className="w-full px-6 sm:px-10 pt-12 pb-16 lg:py-24 lg:pl-[max(3rem,calc((100vw-90rem)/2))] lg:pr-12 xl:pr-16">
+            <motion.p
+              className="kicker mb-6"
+              initial={{ opacity: 0, y: reduce ? 0 : 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1, ease }}
+            >
+              Kinsuroi — The Beauty of Simplicity
+            </motion.p>
 
-          <motion.h1
-            className="font-display text-[2.5rem] leading-[1.08] md:text-5xl lg:text-6xl text-ink"
-            initial={{ opacity: 0, y: reduce ? 0 : 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.22, ease }}
-          >
-            {s(settings, 'hero_title', 'KECANTIKANMU, RITUALMU.')}
-          </motion.h1>
+            <motion.h1
+              className="font-display font-medium uppercase text-[2.5rem] leading-[1.06] sm:text-5xl lg:text-[3.1rem] xl:text-[3.55rem] lg:leading-[1.05] text-ink"
+              initial={{ opacity: 0, y: reduce ? 0 : 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.22, ease }}
+            >
+              {s(settings, 'hero_title', 'Kulitmu tidak butuh lebih banyak. Kulitmu butuh yang tepat.')}
+            </motion.h1>
 
-          <motion.p
-            className="mt-6 md:mt-8 text-base md:text-lg text-muted-foreground font-light max-w-md leading-relaxed"
-            initial={{ opacity: 0, y: reduce ? 0 : 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.34, ease }}
-          >
-            {s(settings, 'hero_subtitle', 'Temukan ritual kecantikan yang sederhana dan elegan bersama KINSUROI.')}
-          </motion.p>
+            <motion.p
+              className="mt-6 md:mt-8 text-base md:text-[17px] text-muted-foreground font-light max-w-md leading-relaxed"
+              initial={{ opacity: 0, y: reduce ? 0 : 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.34, ease }}
+            >
+              {s(settings, 'hero_subtitle', 'KINSUROI the Beauty of Simplicity. Perawatan kulit yang sederhana, tepat, dan berarti.')}
+            </motion.p>
 
-          <motion.div
-            className="mt-10 md:mt-12 flex flex-wrap items-center gap-4"
-            initial={{ opacity: 0, y: reduce ? 0 : 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.46, ease }}
-          >
-            <HashLink to={s(settings, 'hero_cta_url', '/products')} className="btn-primary">
-              {s(settings, 'hero_cta_text', 'LIHAT PRODUK')}
-            </HashLink>
-            <HashLink to={s(settings, 'hero_cta2_url', '/about')} className="btn-outline">
-              {s(settings, 'hero_cta2_text', 'KENALI KINSUROI')}
-            </HashLink>
-          </motion.div>
+            <motion.div
+              className="mt-10 md:mt-12 flex flex-wrap items-center gap-4"
+              initial={{ opacity: 0, y: reduce ? 0 : 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.46, ease }}
+            >
+              <HashLink to={s(settings, 'hero_cta_url', '/products')} className="btn-primary">
+                {s(settings, 'hero_cta_text', 'LIHAT PRODUK')}
+                <ArrowRight size={14} strokeWidth={1.75} aria-hidden="true" />
+              </HashLink>
+              <HashLink to={s(settings, 'hero_cta2_url', '/about')} className="btn-outline">
+                {s(settings, 'hero_cta2_text', 'KENALI KINSUROI')}
+              </HashLink>
+            </motion.div>
+          </div>
         </div>
 
-        {/* Image */}
-        <div className="lg:col-span-6 xl:col-span-7 order-1 lg:order-2">
+        {/* Image — kanan, full-bleed sampai tepi layar & ke bawah navbar */}
+        <div className="lg:col-span-7 order-1 lg:order-2 relative h-[56svh] max-h-[540px] lg:h-auto lg:max-h-none">
           <motion.div
-            className="relative"
+            className="absolute inset-0"
             initial={{ opacity: 0, scale: reduce ? 1 : 1.02 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.4, delay: 0.15, ease }}
           >
-            <div className="relative aspect-[4/5] sm:aspect-[5/4] lg:aspect-[4/4.4] w-full bg-sand overflow-hidden">
-              <Image
-                src={s(settings, 'hero_image', '/images/hero.jpg')}
-                alt="KINSUROI — elegant beauty ritual products"
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 58vw"
-                className="object-cover"
-              />
-            </div>
-            {/* quiet frame accent */}
-            <div className="hidden lg:block absolute -bottom-5 -left-5 w-full h-full border border-line -z-10" aria-hidden="true" />
+            <Image
+              src={s(settings, 'hero_image', '/images/hero.jpg')}
+              alt="Model KINSUROI dalam kimono memegang serum — ritual kecantikan yang sederhana"
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 54vw"
+              className="object-cover object-[68%_center] lg:object-[78%_center]"
+            />
           </motion.div>
         </div>
       </div>

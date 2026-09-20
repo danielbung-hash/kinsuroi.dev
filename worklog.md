@@ -417,3 +417,19 @@ Work Log:
 
 Stage Summary:
 - Philosophy plate photo feature SHIPPED; deploy-author issue fully closed; owner MUST revoke PAT exposed in chat (github_pat_11COOZ... — treat as compromised)
+
+---
+Task ID: 21
+Agent: main (Super Z)
+Task: Redesign homepage hero + navbar per owner's mockup (WhatsApp Image 2026-09-20)
+
+Work Log:
+- Owner sent design mockup: split hero (text left, model photo right full-bleed), slim navbar with logo left + menu beside it (BERANDA bronze underline) + search/bag icons right, serif uppercase headline 'KULITMU TIDAK BUTUH LEBIH BANYAK. KULITMU BUTUH YANG TEPAT.'
+- Production DB already had all mockup content (hero_title/subtitle/ctas set via Admin CMS) -> layout-only change needed
+- HomeView Hero rewritten: grid 5/7, text col aligned to site container edge via lg:pl-[max(3rem,calc((100vw-90rem)/2))], image full-bleed right edge + under transparent navbar (lg:h-[88svh] max-h-820), object-[68%] mobile / lg:object-[78%] keeps icons over white area; ArrowRight icon on primary CTA; old sand box + offset frame removed
+- Navbar rewritten: logo only (tagline removed per mockup, still in footer), 4 items (Beranda/Produk/Tentang Kami/Kontak — Journal stays reachable via footer+homepage), menu beside logo (mr-auto ml-12), search icon opens full SearchOverlay (serif input, live product filter -> /products/[slug], Esc close), bag icon -> /products, active item bronze underline via new .nav-active CSS; mobile menu kept (logo, 4 links, CTA, socials)
+- Visual QA (playwright, dev server): desktop 1440 (5-line headline, both icons legible, bronze underline), mobile 390 (image top + text below), search overlay open, scrolled navbar white/blur — all OK
+- npm run build OK (sandbox prisma error expected, fine on Vercel)
+
+Stage Summary:
+- Committed + pushed with owner PAT; hero now matches owner's mockup 1:1 on production
