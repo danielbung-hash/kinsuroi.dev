@@ -23,15 +23,7 @@ function Hero() {
         {/* Copy — kiri, rata dengan tepi kontainer situs */}
         <div className="lg:col-span-5 order-2 lg:order-1 flex items-center">
           <div className="w-full px-6 sm:px-10 pt-12 pb-16 lg:py-24 lg:pl-[max(3rem,calc((100vw-90rem)/2))] lg:pr-12 xl:pr-16">
-            <motion.p
-              className="kicker mb-6"
-              initial={{ opacity: 0, y: reduce ? 0 : 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1, ease }}
-            >
-              Kinsuroi — The Beauty of Simplicity
-            </motion.p>
-
+            
             <motion.h1
               className="font-display font-medium uppercase text-[2.5rem] leading-[1.06] sm:text-5xl lg:text-[3.1rem] xl:text-[3.55rem] lg:leading-[1.05] text-ink max-w-[8.4em]"
               initial={{ opacity: 0, y: reduce ? 0 : 24 }}
