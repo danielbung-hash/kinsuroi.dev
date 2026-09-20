@@ -433,3 +433,5 @@ Work Log:
 
 Stage Summary:
 - Committed + pushed with owner PAT; hero now matches owner's mockup 1:1 on production
+
+Addendum (Task 21): owner pushed 3 new commits mid-flow replacing hero.jpg with a PORTRAIT crop (1024x1536, same shoot). Rebased redesign onto it (a1b8800), switched object-position to object-[50%_35%] (portrait = vertical overflow; center would clip face), re-QA'd, pushed aaa1a26. Production verified: nav-active + search button + new crop all live; face fully visible, vase/branch visible, icons over white.
