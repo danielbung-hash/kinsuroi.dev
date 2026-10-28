@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import FloatingButtons from "@/component/kinsuroi/FloatingButtons";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://kinsuroi.com";
 
@@ -102,9 +103,11 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
       </head>
-      <body className="antialiased bg-background text-foreground">
-        {children}
-        <Toaster />
+     <body className="antialiased bg-background text-foreground">
+  {children}
+  <FloatingButtons />
+  <Toaster />
+</body>
       </body>
     </html>
   );
