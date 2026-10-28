@@ -254,3 +254,138 @@
 .thin-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
+
+/* ─── Floating Buttons: WhatsApp & Shopee ─── */
+
+.floating-buttons {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 9999;
+}
+
+.float-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  text-decoration: none;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    width 0.25s ease,
+    border-radius 0.25s ease;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+
+.float-btn svg {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.float-label {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    max-width 0.25s ease,
+    opacity 0.25s ease,
+    padding 0.25s ease;
+  padding-left: 0;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  position: relative;
+  z-index: 2;
+}
+
+.float-wa {
+  background: #25D366;
+}
+
+.float-shopee {
+  background: #EE4D2D;
+}
+
+/* Hover: tombol melebar */
+@media (hover: hover) and (pointer: fine) {
+  .float-btn:hover {
+    width: 160px;
+    border-radius: 28px;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .float-btn:hover .float-label {
+    max-width: 100px;
+    opacity: 1;
+    padding-left: 8px;
+    padding-right: 4px;
+  }
+}
+
+/* Animasi denyut WhatsApp */
+.float-wa::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #25D366;
+  z-index: 1;
+  pointer-events: none;
+  animation: floatPulse 2s infinite;
+}
+
+@keyframes floatPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+
+  70% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Responsif untuk mobile */
+@media (max-width: 600px) {
+  .floating-buttons {
+    right: 14px;
+    bottom: 14px;
+    gap: 10px;
+  }
+
+  .float-btn {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+/* Hormati preferensi reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .float-wa::before {
+    animation: none;
+  }
+
+  .float-btn,
+  .float-label {
+    transition: none;
+  }
+}
+
