@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import FloatingButtons from "@/component/kinsuroi/FloatingButtons";
+import FloatingButtons from "@/components/kinsuroi/FloatingButtons";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://kinsuroi.com";
 
