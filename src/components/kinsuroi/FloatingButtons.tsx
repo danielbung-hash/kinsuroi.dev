@@ -4,7 +4,7 @@ export default function FloatingButtons() {
     <div className="floating-buttons">
       {/* WhatsApp */}
       <a
-        href="https://wa.me/6281234567890?text=Halo%20Kinsuroi,%20saya%20ingin%20bertanya"
+        href="https://wa.me/6285888244750?text=Halo%20Kinsuroi,%20saya%20ingin%20bertanya"
         target="_blank"
         rel="noopener noreferrer"
         className="float-btn float-wa"
@@ -25,7 +25,7 @@ export default function FloatingButtons() {
 
       {/* Shopee */}
       <a
-        href="https://shopee.co.id/your_shopee_shop"
+        href="https://shopee.co.id/kinsuroi"
         target="_blank"
         rel="noopener noreferrer"
         className="float-btn float-shopee"
